@@ -1,0 +1,7 @@
+lazy-loader
+httpx
+pydantic
+websockets
+orjson
+eth-account
+msgpack

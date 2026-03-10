@@ -1,0 +1,6 @@
+serve:
+  cd .. && .venv/bin/zensical serve
+
+build:
+  cd .. && .venv/bin/zensical build --clean
+

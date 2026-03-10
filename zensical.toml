@@ -1,0 +1,64 @@
+[project]
+site_name = "Typed Hyperliquid"
+site_description = "Fully typed, validated async client for the Hyperliquid API."
+repo_name = "hyperliquid"
+repo_url = "https://github.com/tribulnation/hyperliquid"
+copyright = """
+Copyright &copy; 2026 Tribulnation
+"""
+nav = [
+  { "Intro" = "index.md" },
+  { "Getting Started" = "getting-started.md" },
+  { "Wallet Setup" = "api-keys.md" },
+  { "API Overview" = "api-overview.md" },
+  { "Reference" = [
+    "reference/index.md",
+    "reference/error-handling.md",
+    "reference/env-vars.md",
+    { "API Reference" = [
+      "reference/api/index.md",
+      "reference/api/hyperliquid.md",
+      "reference/api/info.md",
+      "reference/api/exchange.md",
+      "reference/api/streams.md",
+    ] },
+  ] },
+  { "Examples" = ["examples/index.md", "examples/public-data.md", "examples/authenticated-requests.md", "examples/streams.md"] },
+]
+
+[project.theme]
+language = "en"
+logo = "media/logo.png"
+favicon = "media/logo.png"
+features = [
+  "content.code.copy",
+]
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "black"
+accent = "amber"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+scheme = "default"
+primary = "black"
+accent = "amber"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[project.extra]
+homepage = "https://tribulnation.com"
+
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+
+[project.markdown_extensions.pymdownx.superfences]
+
+[project.plugins.mkdocstrings.handlers.python]
+paths = ["pkg/src"]
+inventories = ["https://docs.python.org/3/objects.inv"]
