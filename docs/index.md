@@ -127,8 +127,8 @@ Current coverage is split across:
 - [**Getting Started**](getting-started.md) - Install the package and make your first requests
 - [**Wallet Setup**](api-keys.md) - Configure wallet-based authentication
 - [**API Overview**](api-overview.md) - Understand the client structure and coverage
+- [**How To**](how-to/index.md) - Task-focused guides for orders, market data, balances, and transactions
 - [**Reference**](reference/index.md) - Error handling, env vars, and generated endpoint docs
-- [**Examples**](examples/index.md) - Practical usage patterns
 
 ## Design Philosophy
 

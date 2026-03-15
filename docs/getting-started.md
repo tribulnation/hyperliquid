@@ -70,4 +70,4 @@ For public-only workflows, prefer `Info` or `Streams` directly.
 
 - Read [Wallet Setup](api-keys.md) before using `Exchange` or `Hyperliquid`
 - Read [API Overview](api-overview.md) to understand the split between `Info`, `Exchange`, `Streams`, and `Hyperliquid`
-- Browse [Examples](examples/index.md) for practical workflows
+- Browse [How To](how-to/index.md) for task-focused workflows

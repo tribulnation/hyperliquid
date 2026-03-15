@@ -11,19 +11,28 @@ nav = [
   { "Getting Started" = "getting-started.md" },
   { "Wallet Setup" = "api-keys.md" },
   { "API Overview" = "api-overview.md" },
+  { "How To" = [
+    { "Overview" = "how-to/index.md" },
+    "how-to/place-and-manage-orders.md",
+    "how-to/fetch-market-data.md",
+    "how-to/fetch-balances-and-positions.md",
+    "how-to/fetch-transactions.md",
+    "how-to/listen-to-your-trades.md",
+    "how-to/listen-to-public-data.md",
+  ] },
   { "Reference" = [
-    "reference/index.md",
+    { "Overview" = "reference/index.md" },
     "reference/error-handling.md",
     "reference/env-vars.md",
-    { "API Reference" = [
-      "reference/api/index.md",
+    "reference/timestamps.md",
+    { "API" = [
+      { "Overview" = "reference/api/index.md" },
       "reference/api/hyperliquid.md",
       "reference/api/info.md",
       "reference/api/exchange.md",
       "reference/api/streams.md",
     ] },
   ] },
-  { "Examples" = ["examples/index.md", "examples/public-data.md", "examples/authenticated-requests.md", "examples/streams.md"] },
 ]
 
 [project.theme]

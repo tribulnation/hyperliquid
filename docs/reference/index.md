@@ -1,4 +1,4 @@
-# Reference
+# Overview
 
 This section contains operational and implementation-level reference material.
 
@@ -8,4 +8,5 @@ Use it when you need exact behavior, environment configuration, or generated end
 
 - [Error Handling](error-handling.md)
 - [Environment Variables](env-vars.md)
+- [Timestamps](timestamps.md)
 - [API Reference](api/index.md)
