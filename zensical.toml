@@ -22,6 +22,7 @@ nav = [
   ] },
   { "Reference" = [
     { "Overview" = "reference/index.md" },
+    "reference/async-usage.md",
     "reference/error-handling.md",
     "reference/env-vars.md",
     "reference/timestamps.md",

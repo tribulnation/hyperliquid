@@ -6,7 +6,8 @@ Use it when you need exact behavior, environment configuration, or generated end
 
 ## Sections
 
+- [Async Usage](async-usage.md)
 - [Error Handling](error-handling.md)
 - [Environment Variables](env-vars.md)
 - [Timestamps](timestamps.md)
-- [API Reference](api/index.md)
+- [API](api/index.md)
