@@ -33,7 +33,7 @@ class L2Book(StreamsMixin):
     - `n_sig_figs`: Aggregate levels to significant figures.
     - `mantissa`: Only allowed when `n_sig_figs` is 5.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions#subscription-messages)
     """
     params: L2BookParams = {'coin': coin}
     if n_sig_figs is not None:
@@ -41,8 +41,6 @@ class L2Book(StreamsMixin):
     if mantissa is not None:
       params['mantissa'] = mantissa
     stream = await self.subscribe('l2Book', params)
-    coin_l = coin.lower()
-    stream = stream.filter(lambda msg: msg.get('coin', '').lower() == coin_l)
     def mapper(msg) -> L2BookData:
       return adapter.validate_python(msg) if self.validate else msg
     return stream.map(mapper)

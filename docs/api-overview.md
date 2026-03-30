@@ -31,10 +31,10 @@ Current coverage includes:
 Use `Exchange` for signed actions.
 
 ```python
-from hyperliquid import Hyperliquid
+from hyperliquid import Exchange
 
-async with Hyperliquid.http() as client:
-  result = await client.exchange.noop()
+async with Exchange.http('0xyour_private_key') as exchange:
+  result = await exchange.noop()
 ```
 
 Current coverage includes:
@@ -76,9 +76,10 @@ async with Hyperliquid.http() as client:
 
 Important nuance:
 
-- `Hyperliquid.http()` and `Hyperliquid.ws()` require a wallet because `exchange` is always included
+- `Exchange.http()` and `Exchange.ws()` accept either a wallet object or a raw private key
+- `Hyperliquid.http()` and `Hyperliquid.ws()` read `HYPERLIQUID_PRIVATE_KEY` when no wallet is passed because `exchange` is always included
 - for public-only workflows, prefer `Info` or `Streams`
 
 ## Generated Reference
 
-The complete endpoint reference belongs under [Reference > API Reference](reference/api/index.md).
+The complete endpoint reference belongs under [Reference > API](reference/api/index.md).

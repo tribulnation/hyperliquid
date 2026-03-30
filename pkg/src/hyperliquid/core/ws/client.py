@@ -2,13 +2,12 @@ from typing_extensions import Any, Literal, Union, Annotated, Mapping, TypeAlias
 from hyperliquid.core import TypedDict
 from dataclasses import dataclass, field
 import json
-import logging
 import websockets
 from pydantic import TypeAdapter, Tag, Discriminator
 import asyncio
 
-from .multiplex_streams_rpc import MultiplexStreamsRPCSocketClient, Message
-from ..exc import NetworkError, ApiError
+from typed_core.ws.streams_rpc import StreamsRpc, Message
+from typed_core.exceptions import NetworkError, ApiError
 
 class PostInfoPayload(TypedDict):
   type: str
@@ -38,6 +37,9 @@ class ErrorMessage(TypedDict):
   channel: Literal['error']
   data: Any
 
+class PongMessage(TypedDict):
+  channel: Literal['pong']
+
 class SubscriptionResponseData(TypedDict):
   method: Literal['subscribe', 'unsubscribe']
   subscription: dict
@@ -50,7 +52,7 @@ class SubscriptionMessage(TypedDict):
   channel: str
   data: Any
 
-def msg_discriminator(msg) -> Literal['post', 'subscription', 'subscriptionResponse', 'error']:
+def msg_discriminator(msg) -> Literal['post', 'subscription', 'subscriptionResponse', 'error', 'pong']:
   if isinstance(msg, Mapping):
     if msg.get('channel') == 'post':
       return 'post'
@@ -58,6 +60,8 @@ def msg_discriminator(msg) -> Literal['post', 'subscription', 'subscriptionRespo
       return 'subscriptionResponse'
     elif msg.get('channel') == 'error':
       return 'error'
+    elif msg.get('channel') == 'pong':
+      return 'pong'
   return 'subscription'
 
 ServerMessage: TypeAlias = Annotated[
@@ -66,10 +70,11 @@ ServerMessage: TypeAlias = Annotated[
     Annotated[SubscriptionMessage, Tag('subscription')],
     Annotated[SubscriptionResponse, Tag('subscriptionResponse')],
     Annotated[ErrorMessage, Tag('error')],
+    Annotated[PongMessage, Tag('pong')],
   ],
   Discriminator(msg_discriminator),
 ]
-msg_adapter = TypeAdapter[PostMessage|SubscriptionMessage|SubscriptionResponse](ServerMessage)
+msg_adapter = TypeAdapter[PostMessage|SubscriptionMessage|SubscriptionResponse|ErrorMessage|PongMessage](ServerMessage)
 
 def is_post_msg(msg: ServerMessage) -> TypeGuard[PostMessage]:
   return msg['channel'] == 'post'
@@ -77,20 +82,24 @@ def is_post_msg(msg: ServerMessage) -> TypeGuard[PostMessage]:
 def is_subscription_response(msg: ServerMessage) -> TypeGuard[SubscriptionResponse]:
   return msg['channel'] == 'subscriptionResponse'
 
+def is_subscription_msg(msg: ServerMessage) -> TypeGuard[SubscriptionMessage]:
+  return msg_discriminator(msg) == 'subscription'
+
 def is_error_msg(msg: ServerMessage) -> TypeGuard[ErrorMessage]:
   return msg['channel'] == 'error'
+
+def is_pong_msg(msg: ServerMessage) -> TypeGuard[PongMessage]:
+  return msg['channel'] == 'pong'
 
 class Request(TypedDict):
   type: Literal['info', 'action']
   payload: Any
 
-logger = logging.getLogger('hyperliquid.core.ws')
-
 @dataclass
-class SocketClient(MultiplexStreamsRPCSocketClient[Any, Any, Any, SubscriptionResponseData, SubscriptionResponseData]):
+class SocketClient(StreamsRpc[Request, PostResponse, Any, SubscriptionResponseData, SubscriptionResponseData]):
   serial_messages: asyncio.Queue[SubscriptionResponse|ErrorMessage] = field(default_factory=asyncio.Queue, init=False, repr=False)
 
-  async def req_subscription(self, channel: str, params=None):
+  async def request_subscription(self, channel: str, params=None):
     await self.send({
       'method': 'subscribe',
       'subscription': {
@@ -104,7 +113,7 @@ class SocketClient(MultiplexStreamsRPCSocketClient[Any, Any, Any, SubscriptionRe
     else:
       raise ApiError(msg['data'])
 
-  async def req_unsubscription(self, channel: str, params=None):
+  async def request_unsubscription(self, channel: str, params=None):
     await self.send({
       'method': 'unsubscribe',
       'subscription': {
@@ -124,6 +133,11 @@ class SocketClient(MultiplexStreamsRPCSocketClient[Any, Any, Any, SubscriptionRe
       'id': id,
       'request': msg,
     })
+
+  async def ping(self):
+    await self.send({
+      'method': 'ping',
+    })
   
   async def send(self, msg):
     ws = await self.ws
@@ -142,13 +156,9 @@ class SocketClient(MultiplexStreamsRPCSocketClient[Any, Any, Any, SubscriptionRe
       }
     elif is_subscription_response(obj) or is_error_msg(obj):
       self.serial_messages.put_nowait(obj)
-    else:
+    elif is_subscription_msg(obj):
       return {
         'kind': 'subscription',
         'channel': obj['channel'],
-        'data': obj['data'],
+        'notification': obj['data'],
       }
-
-  async def request(self, request: Request) -> PostResponse:
-    return await self.rpc_request(request)
-    

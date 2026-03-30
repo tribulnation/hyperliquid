@@ -30,7 +30,7 @@ async with Hyperliquid.http() as client:
 
 ## Direct Wallet Usage
 
-You can also pass a wallet or private key directly:
+You can also pass a wallet or private key directly to `Hyperliquid`:
 
 ```python
 from hyperliquid import Hyperliquid
@@ -41,7 +41,14 @@ async with Hyperliquid.http('0xyour_private_key') as client:
 
 ## Exchange-Only Usage
 
-If you only need signed actions, you can instantiate `Exchange` directly with a wallet object.
+If you only need signed actions, instantiate `Exchange` directly with either a wallet object or a raw private key:
+
+```python
+from hyperliquid import Exchange
+
+async with Exchange.http('0xyour_private_key') as exchange:
+  result = await exchange.noop()
+```
 
 ## Security Notes
 

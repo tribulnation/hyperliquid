@@ -49,3 +49,5 @@ async with Streams.new() as streams:
 - `candle()` for live candle updates
 - `trades()` for public trade prints
 - `all_mids()` for market-wide mid prices
+- `bbo()` for best-bid/best-offer updates
+- `active_asset_ctx()` and `active_asset_data()` for asset-level live state

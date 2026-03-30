@@ -4,6 +4,8 @@ Use `Info` for request-response market data reads.
 
 ## Fetch Depth
 
+Use `dex=...` when you want mids or books from a non-default perp dex.
+
 ```python
 from hyperliquid import Info
 
@@ -72,3 +74,16 @@ async with Info.http() as info:
 ```
 
 For longer windows, use `funding_history_paged()`.
+
+```python
+from datetime import datetime, timedelta
+from hyperliquid import Info
+from hyperliquid.core import timestamp as ts
+
+end_time = ts.now()
+start_time = ts.dump(datetime.now() - timedelta(days=30))
+
+async with Info.http() as info:
+  async for chunk in info.funding_history_paged('BTC', start_time, end_time=end_time):
+    print(len(chunk))
+```

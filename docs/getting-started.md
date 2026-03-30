@@ -44,10 +44,16 @@ export HYPERLIQUID_PRIVATE_KEY="your_private_key"
 Then use the composite client or `Exchange` directly:
 
 ```python
-from hyperliquid import Hyperliquid
+from hyperliquid import Exchange, Hyperliquid
 
 async with Hyperliquid.http() as client:
   result = await client.exchange.noop()
+  print(result['status'])
+
+# Or use Exchange directly if you only need signed actions:
+async with Exchange.http('0xyour_private_key') as exchange:
+  result = await exchange.noop()
+  print(result['status'])
 ```
 
 ## Transport Choices
@@ -56,13 +62,17 @@ Use the surface that matches what you need:
 
 - `Info.http()` for public request-response over HTTP
 - `Info.ws()` for public request-response over WebSocket
-- `Exchange.http()` or `Exchange.ws()` for signed actions
+- `Exchange.http(wallet)` or `Exchange.ws(wallet)` for signed actions
 - `Streams.new()` for subscriptions
 - `Hyperliquid.http()` or `Hyperliquid.ws()` for the full bundle
 
 ## Important Nuance
 
 `Hyperliquid.http()` and `Hyperliquid.ws()` always require a wallet, because they include `exchange`.
+
+`Exchange.http()` and `Exchange.ws()` accept either a wallet object or a raw private key.
+
+`Info` and `Streams` never need a private key for public usage.
 
 For public-only workflows, prefer `Info` or `Streams` directly.
 

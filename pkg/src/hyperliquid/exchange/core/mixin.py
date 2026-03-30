@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import timedelta
 import pydantic
+from eth_account.account import Account
 from eth_account.signers.local import LocalAccount
 
 from hyperliquid.core import (
@@ -12,6 +13,13 @@ from hyperliquid.core import (
 )
 
 T = TypeVar('T', default=Any)
+Wallet = LocalAccount | str | bytes | int
+
+def _parse_wallet(wallet: Wallet) -> LocalAccount:
+  if isinstance(wallet, LocalAccount):
+    return wallet
+  else:
+    return Account.from_key(wallet)
 
 class ExchangeRequest(TypedDict):
   action: Mapping[str, Any]
@@ -83,7 +91,7 @@ class ExchangeSocketClient(ExchangeClient):
     return self.ws.url
 
   async def request(self, request: ExchangeRequest):
-    reply = await self.ws.request({
+    reply = await self.ws.rpc_request({
       'type': 'action',
       'payload': request,
     })
@@ -111,7 +119,8 @@ class ExchangeMixin:
   validate: bool = True
 
   @classmethod
-  def http(cls, wallet: LocalAccount, *, mainnet: bool = True, validate: bool = True, http: HttpClient | None = None):
+  def http(cls, wallet: Wallet, *, mainnet: bool = True, validate: bool = True, http: HttpClient | None = None):
+    wallet = _parse_wallet(wallet)
     domain = HYPERLIQUID_MAINNET if mainnet else HYPERLIQUID_TESTNET
     http = http or HttpClient()
     client = ExchangeHttpClient(domain=domain, validate=validate, http=http)
@@ -119,12 +128,13 @@ class ExchangeMixin:
 
 
   @classmethod
-  def ws_of(cls, wallet: LocalAccount, *, ws: SocketClient, mainnet: bool = True, validate: bool = True):
+  def ws_of(cls, wallet: Wallet, *, ws: SocketClient, mainnet: bool = True, validate: bool = True):
+    wallet = _parse_wallet(wallet)
     client = ExchangeSocketClient(ws=ws, validate=validate)
     return cls(client=client, wallet=wallet, mainnet=mainnet, validate=validate)
 
   @classmethod
-  def ws(cls, wallet: LocalAccount, *, mainnet: bool = True, validate: bool = True, timeout: timedelta = timedelta(seconds=10)):
+  def ws(cls, wallet: Wallet, *, mainnet: bool = True, validate: bool = True, timeout: timedelta = timedelta(seconds=10)):
     domain = HYPERLIQUID_MAINNET if mainnet else HYPERLIQUID_TESTNET
     ws = SocketClient(url=f'wss://{domain}/ws', timeout=timeout)
     return cls.ws_of(wallet=wallet, ws=ws, mainnet=mainnet, validate=validate)

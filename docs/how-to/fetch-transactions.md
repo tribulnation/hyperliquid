@@ -40,6 +40,14 @@ async with Info.http() as info:
 
 For long ranges, use `user_funding_paged()`.
 
+```python
+from hyperliquid import Info
+
+async with Info.http() as info:
+  async for chunk in info.user_funding_paged(user, start_ms, end_time=end_ms):
+    print(len(chunk))
+```
+
 ## Fetch Other Ledger Flows
 
 Use `user_non_funding_ledger_updates()` for non-funding transfers and ledger events.

@@ -1,5 +1,7 @@
 # Typed Hyperliquid
 
+[![Hyperliquid](https://app.hyperliquid.xyz/images/logo-privy.svg)](https://app.hyperliquid.xyz/trade)
+
 > A fully typed, validated async client for the Hyperliquid API.
 
 **Use autocomplete instead of documentation.**
@@ -35,6 +37,62 @@ This package exposes four public entry points:
 ```bash
 pip install typed-hyperliquid
 ```
+
+## Quick Start
+
+### Public reads
+
+Use `Info` for request-response reads over HTTP:
+
+```python
+from hyperliquid import Info
+
+async with Info.http() as info:
+  mids = await info.all_mids()
+  book = await info.l2_book('BTC')
+  print(mids['BTC'], book['levels'][0][0]['px'])
+```
+
+### Public streams
+
+Use `Streams` for subscription workflows:
+
+```python
+from hyperliquid import Streams
+
+async with Streams.new() as streams:
+  trades = await streams.trades('BTC')
+  async for batch in trades:
+    print(batch[0]['px'])
+    break
+```
+
+### Authenticated actions
+
+Hyperliquid auth is wallet-based, not API-key based:
+
+```bash
+export HYPERLIQUID_PRIVATE_KEY="your_private_key"
+```
+
+```python
+from hyperliquid import Hyperliquid
+
+async with Hyperliquid.http() as client:
+  result = await client.exchange.noop()
+  print(result['status'])
+```
+
+## Transport Model
+
+This package intentionally separates Hyperliquid's three usage modes:
+
+- `Info.http()` and `Info.ws()` for read-only request-response calls
+- `Exchange.http(wallet)` and `Exchange.ws(wallet)` for signed exchange actions
+- `Streams.new()` for subscriptions
+- `Hyperliquid.http()` and `Hyperliquid.ws()` as convenience bundles
+
+`Exchange.http()` and `Exchange.ws()` accept either a wallet object or a raw private key. `Hyperliquid.http()` and `Hyperliquid.ws()` also accept those forms, and can additionally read `HYPERLIQUID_PRIVATE_KEY` when no wallet is passed.
 
 ## Documentation
 

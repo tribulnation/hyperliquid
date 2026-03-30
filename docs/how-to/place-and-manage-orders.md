@@ -8,7 +8,7 @@ export HYPERLIQUID_PRIVATE_KEY="your_private_key"
 
 ## Resolve The Asset Id
 
-`Exchange.order()` takes Hyperliquid asset ids, not coin symbols. For perps on the default dex, the asset id is the index in `perp_meta()['universe']`.
+`Exchange.order()` takes one or more order wire objects, and each order uses Hyperliquid asset ids rather than coin symbols. For perps on the default dex, the asset id is the index in `perp_meta()['universe']`.
 
 ```python
 from hyperliquid import Info
@@ -41,6 +41,8 @@ async with Hyperliquid.http() as client:
   print(status)
 ```
 
+You can pass multiple orders to `order(...)` in one call when you need batch placement.
+
 ## Query A Specific Order
 
 Use the account address plus either an order id or a client order id.
@@ -58,7 +60,7 @@ async with Info.http() as info:
 
 ## List Open Orders
 
-`open_orders()` returns the compact wire shape. `frontend_open_orders()` includes extra fields such as trigger metadata.
+`open_orders()` returns the compact wire shape. `frontend_open_orders()` includes extra fields such as trigger metadata. Both accept `dex=...` for non-default perp dexes.
 
 ```python
 from hyperliquid import Info
@@ -72,7 +74,7 @@ async with Info.http() as info:
 
 ## Cancel An Order
 
-`cancel()` expects the same asset id plus the Hyperliquid order id.
+`cancel()` accepts one or more cancel wire objects with the same asset id plus the Hyperliquid order id.
 
 ```python
 from hyperliquid import Hyperliquid

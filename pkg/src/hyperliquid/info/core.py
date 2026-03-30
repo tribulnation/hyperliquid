@@ -55,7 +55,7 @@ class InfoSocketClient(InfoClient):
     return self.ws.url
 
   async def request(self, params: Mapping[str, Any]):
-    reply = await self.ws.request({
+    reply = await self.ws.rpc_request({
       'type': 'info',
       'payload': params,
     })

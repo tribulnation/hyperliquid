@@ -18,11 +18,13 @@ logger = logging.getLogger('hyperliquid.core.ws')
 class Context:
   ws: websockets.ClientConnection
   listener: asyncio.Task
+  pinger: asyncio.Task
 
 @dataclass(kw_only=True)
 class SocketClient(ABC):
   url: str
   timeout: timedelta = timedelta(seconds=10)
+  ping_interval: timedelta = timedelta(seconds=50)
   ctx_future: asyncio.Future[Context] = field(default_factory=asyncio.Future, init=False)
   open_lock: asyncio.Lock = field(default_factory=asyncio.Lock, init=False)
   close_lock: asyncio.Lock = field(default_factory=asyncio.Lock, init=False)
@@ -55,6 +57,7 @@ class SocketClient(ABC):
     return Context(
       ws=ws,
       listener=asyncio.create_task(self.listener(ws)),
+      pinger=asyncio.create_task(self.pinger()),
     )
   
   async def open(self) -> Context:
@@ -88,6 +91,15 @@ class SocketClient(ABC):
   @abstractmethod
   def on_msg(self, msg: str | bytes):
     ...
+
+  @abstractmethod
+  async def ping(self):
+    ...
+
+  async def pinger(self):
+    while True:
+      await asyncio.sleep(self.ping_interval.total_seconds())
+      await self.ping()
 
   async def wait_with_listener(self, fut: asyncio.Future[T]) -> T:
     """Wait for a future to complete, propagating any exceptions if the listener task fails or gets cancelled"""

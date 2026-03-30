@@ -54,6 +54,7 @@ from hyperliquid import Hyperliquid
 
 async with Hyperliquid.http() as client:
   result = await client.exchange.noop()
+  print(result['status'])
 ```
 
 ## Features
@@ -88,6 +89,8 @@ time: int = book['time']
 Response validation is **on by default** but can be disabled:
 
 ```python
+from hyperliquid import Info
+
 validated = Info.http()
 raw = Info.http(validate=False)
 ```
@@ -110,6 +113,8 @@ from hyperliquid import Hyperliquid
 async with Hyperliquid.http() as client:
   mids = await client.info.all_mids()
 ```
+
+These convenience constructors read `HYPERLIQUID_PRIVATE_KEY` when you do not pass a wallet explicitly.
 
 ## API Coverage
 

@@ -1,7 +1,3 @@
-lazy-loader
-httpx
-pydantic
-websockets
-orjson
+typed-core
 eth-account
 msgpack

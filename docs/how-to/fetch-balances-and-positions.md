@@ -21,6 +21,8 @@ async with Info.http() as info:
 
 `clearinghouse_state()` returns margin summaries plus open perpetual positions.
 
+If you trade on a non-default perp dex, pass `dex=...`.
+
 ```python
 from hyperliquid import Info
 
