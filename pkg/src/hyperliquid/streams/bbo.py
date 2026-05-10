@@ -22,9 +22,11 @@ class Bbo(StreamsMixin):
   async def bbo(self, coin: str):
     """Stream best-bid-offer updates.
 
-    - `coin`: Asset symbol.
+    Args:
+      coin: Asset symbol.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('bbo', {'coin': coin})
     coin_l = coin.lower()

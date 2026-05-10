@@ -45,9 +45,11 @@ class UserTwapSliceFills(StreamsMixin):
   async def user_twap_slice_fills(self, user: str):
     """Stream TWAP slice fills for a user.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('userTwapSliceFills', {'user': user})
     user_l = user.lower()

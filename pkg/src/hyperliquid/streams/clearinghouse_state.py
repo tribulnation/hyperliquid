@@ -31,12 +31,15 @@ class ClearinghouseState(StreamsMixin):
   async def clearinghouse_state(self, user: str, dex: str):
     """Stream clearinghouse state for a user.
 
-    - `user`: Account address.
-    - `dex`: Perp dex name.
+    Args:
+      user: Account address.
+      dex: Perp dex name.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('clearinghouseState', {'user': user, 'dex': dex})
     def mapper(msg) -> ClearinghouseStateData:
-      return adapter.validate_python(msg) if self.validate else msg
+      data = msg.get('clearinghouseState', msg)
+      return adapter.validate_python(data) if self.validate else data
     return stream.map(mapper)

@@ -12,7 +12,7 @@ class VaultTransferAction(TypedDict):
   usd: float
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -23,7 +23,14 @@ class VaultTransfer(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Deposit or withdraw from a vault.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#deposit-or-withdraw-from-a-vault)
+    Args:
+      vault_address: Vault address.
+      is_deposit: Whether to deposit into the vault.
+      usd: USD amount.
+      expires_after: Optional expiration timestamp for the signed action.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#deposit-or-withdraw-from-a-vault)
     """
     action: VaultTransferAction = {
       'type': 'vaultTransfer',

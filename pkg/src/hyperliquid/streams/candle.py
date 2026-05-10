@@ -25,10 +25,12 @@ class Candle(StreamsMixin):
   async def candle(self, coin: str, interval: str):
     """Stream candle updates for a coin.
 
-    - `coin`: Asset symbol.
-    - `interval`: Candle interval.
+    Args:
+      coin: Asset symbol.
+      interval: Candle interval.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('candle', {'coin': coin, 'interval': interval})
     coin_l = coin.lower()

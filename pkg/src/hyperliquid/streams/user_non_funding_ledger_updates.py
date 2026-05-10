@@ -116,9 +116,11 @@ class UserNonFundingLedgerUpdates(StreamsMixin):
   async def user_non_funding_ledger_updates(self, user: str):
     """Stream non-funding ledger updates.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('userNonFundingLedgerUpdates', {'user': user})
     user_l = user.lower()

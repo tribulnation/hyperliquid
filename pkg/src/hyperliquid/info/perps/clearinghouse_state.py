@@ -58,11 +58,13 @@ class ClearinghouseState(InfoMixin):
   ) -> ClearinghouseStateResponse:
     """Return a user's perpetuals account summary.
 
-    - `user`: Account address.
-    - `dex`: Perp dex name. Defaults to the empty string which represents the
-      first perp dex.
+    Args:
+      user: Account address.
+      dex: Perp dex name. Defaults to the empty string which represents the
+        first perp dex.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-users-perpetuals-account-summary)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-users-perpetuals-account-summary)
     """
     params: dict[str, object] = {'type': 'clearinghouseState', 'user': user}
     if dex is not None:

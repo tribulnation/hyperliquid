@@ -21,7 +21,8 @@ class AllBorrowLendReserveStates(InfoMixin):
   async def all_borrow_lend_reserve_states(self) -> AllBorrowLendReserveStatesResponse:
     """Return all borrow/lend reserve states.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-all-borrow-lend-reserve-states)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-all-borrow-lend-reserve-states)
     """
     r = await self.request({'type': 'allBorrowLendReserveStates'})
     return adapter.validate_python(r) if self.validate else r

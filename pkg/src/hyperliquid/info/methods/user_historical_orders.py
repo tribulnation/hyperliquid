@@ -55,9 +55,11 @@ class UserHistoricalOrders(InfoMixin):
   ) -> UserHistoricalOrdersResponse:
     """Return a user's historical orders.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-historical-orders)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-historical-orders)
     """
     r = await self.request({'type': 'historicalOrders', 'user': user})
     return adapter.validate_python(r) if self.validate else r

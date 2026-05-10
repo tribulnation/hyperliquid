@@ -20,7 +20,8 @@ class SpotMetaAndAssetCtxs(InfoMixin):
   async def spot_meta_and_asset_ctxs(self) -> SpotMetaAndAssetCtxsResponse:
     """Return spot metadata and asset contexts.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-spot-asset-contexts)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-spot-asset-contexts)
     """
     r = await self.request({'type': 'spotMetaAndAssetCtxs'})
     return adapter.validate_python(r) if self.validate else r

@@ -36,17 +36,19 @@ class SubAccount(TypedDict):
   clearinghouseState: ClearinghouseState
   spotState: SpotState
 
-SubAccountsResponse = list[SubAccount]
+SubAccountsResponse = list[SubAccount] | None
 
-adapter = pydantic.TypeAdapter(SubAccountsResponse)
+adapter = pydantic.TypeAdapter(SubAccountsResponse) # type: ignore
 
 class SubAccounts(InfoMixin):
   async def sub_accounts(self, user: str) -> SubAccountsResponse:
     """Return a user's subaccounts.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-subaccounts)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-subaccounts)
     """
     r = await self.request({'type': 'subAccounts', 'user': user})
     return adapter.validate_python(r) if self.validate else r

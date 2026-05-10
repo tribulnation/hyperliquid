@@ -13,7 +13,7 @@ class Withdraw3Action(TypedDict):
   destination: str
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -25,7 +25,14 @@ class Withdraw3(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Initiate a withdrawal request.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#initiate-a-withdrawal-request)
+    Args:
+      amount: Decimal USDC amount string.
+      destination: Destination address.
+      signature_chain_id: Chain id used for the user-signed action.
+      time: Optional action timestamp. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#initiate-a-withdrawal-request)
     """
     ts = timestamp.now()
     action: Withdraw3Action = {

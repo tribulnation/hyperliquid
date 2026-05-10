@@ -18,10 +18,12 @@ class OpenOrders(StreamsMixin):
   async def open_orders(self, user: str, dex: str):
     """Stream open orders for a user.
 
-    - `user`: Account address.
-    - `dex`: Perp dex name.
+    Args:
+      user: Account address.
+      dex: Perp dex name.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('openOrders', {'user': user, 'dex': dex})
     user_l = user.lower()

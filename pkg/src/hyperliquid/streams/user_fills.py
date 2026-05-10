@@ -13,7 +13,7 @@ class WsFill(TypedDict):
   coin: str
   px: str
   sz: str
-  side: str
+  side: Literal['Buy', 'Sell']
   time: int
   startPosition: str
   dir: str
@@ -42,10 +42,12 @@ class UserFills(StreamsMixin):
   async def user_fills(self, user: str, *, aggregate_by_time: bool | None = None):
     """Stream user fills.
 
-    - `user`: Account address.
-    - `aggregate_by_time`: Aggregate partial fills in the same block.
+    Args:
+      user: Account address.
+      aggregate_by_time: Aggregate partial fills in the same block.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions)
     """
     params: UserFillsParams = {'user': user}
     if aggregate_by_time is not None:

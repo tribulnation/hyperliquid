@@ -54,18 +54,20 @@ class VaultDetailsResponse(TypedDict):
   allowDeposits: bool
   alwaysCloseOnWithdraw: bool
 
-adapter = pydantic.TypeAdapter(VaultDetailsResponse)
+adapter = pydantic.TypeAdapter(VaultDetailsResponse | None)
 
 class VaultDetails(InfoMixin):
   async def vault_details(
     self, vault_address: str, *, user: str | None = None
-  ) -> VaultDetailsResponse:
+  ) -> VaultDetailsResponse | None:
     """Return details for a vault.
 
-    - `vault_address`: Vault address.
-    - `user`: Account address.
+    Args:
+      vault_address: Vault address.
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-details-for-a-vault)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-details-for-a-vault)
     """
     params: dict[str, object] = {
       'type': 'vaultDetails',

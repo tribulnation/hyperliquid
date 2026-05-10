@@ -23,9 +23,11 @@ class StakingHistory(InfoMixin):
   async def staking_history(self, user: str) -> StakingHistoryResponse:
     """Return a user's staking history.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-staking-history)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-staking-history)
     """
     r = await self.request({'type': 'delegatorHistory', 'user': user})
     return adapter.validate_python(r) if self.validate else r

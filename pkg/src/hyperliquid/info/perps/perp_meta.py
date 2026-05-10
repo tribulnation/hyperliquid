@@ -32,10 +32,12 @@ class PerpMeta(InfoMixin):
   async def perp_meta(self, dex: str | None = None) -> PerpMetaResponse:
     """Return perpetuals metadata (universe and margin tables).
 
-    - `dex`: Perp dex name. Defaults to the empty string which represents the
-      first perp dex.
+    Args:
+      dex: Perp dex name. Defaults to the empty string which represents the
+        first perp dex.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-perpetuals-metadata-universe-and-margin-tables)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-perpetuals-metadata-universe-and-margin-tables)
     """
     params: dict[str, object] = {'type': 'meta'}
     if dex is not None:

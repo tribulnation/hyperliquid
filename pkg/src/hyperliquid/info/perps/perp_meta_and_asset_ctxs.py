@@ -49,10 +49,12 @@ class PerpMetaAndAssetCtxs(InfoMixin):
   ) -> PerpMetaAndAssetCtxsResponse:
     """Return perpetuals metadata and asset contexts.
 
-    - `dex`: Perp dex name. Defaults to the empty string which represents the
-      first perp dex.
+    Args:
+      dex: Perp dex name. Defaults to the empty string which represents the
+        first perp dex.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-perpetuals-asset-contexts-includes-mark-price-current-funding-open-interest-etc)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-perpetuals-asset-contexts-includes-mark-price-current-funding-open-interest-etc)
     """
     params: dict[str, object] = {'type': 'metaAndAssetCtxs'}
     if dex is not None:

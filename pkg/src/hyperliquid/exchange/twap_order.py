@@ -45,7 +45,13 @@ class TwapOrder(ExchangeMixin):
   ) -> ExchangeResponse[TwapOrderResponse]:
     """Place a TWAP order.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#place-a-twap-order)
+    Args:
+      twap: TWAP order wire object.
+      vault_address: Optional vault address for the signed action.
+      expires_after: Optional expiration timestamp for the signed action.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#place-a-twap-order)
     """
     action: TwapOrderAction = {
       'type': 'twapOrder',

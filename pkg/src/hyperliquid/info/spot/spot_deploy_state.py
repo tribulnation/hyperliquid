@@ -35,9 +35,11 @@ class SpotDeployState(InfoMixin):
   async def spot_deploy_state(self, user: str) -> SpotDeployStateResponse:
     """Return spot deploy auction status.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-information-about-the-spot-deploy-auction)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-information-about-the-spot-deploy-auction)
     """
     r = await self.request({'type': 'spotDeployState', 'user': user})
     return adapter.validate_python(r) if self.validate else r

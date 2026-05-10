@@ -11,10 +11,12 @@ class PerpsAtOpenInterestCap(InfoMixin):
   ) -> PerpsAtOpenInterestCapResponse:
     """Return perps at open interest caps.
 
-    - `dex`: Perp dex name. Defaults to the empty string which represents the
-      first perp dex.
+    Args:
+      dex: Perp dex name. Defaults to the empty string which represents the
+        first perp dex.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-perps-at-open-interest-caps)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-perps-at-open-interest-caps)
     """
     params: dict[str, object] = {'type': 'perpsAtOpenInterestCap'}
     if dex is not None:

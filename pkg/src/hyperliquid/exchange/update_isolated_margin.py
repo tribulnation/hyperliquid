@@ -17,7 +17,7 @@ class TopUpIsolatedOnlyMarginAction(TypedDict):
   leverage: str
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -29,7 +29,15 @@ class UpdateIsolatedMargin(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Add or remove margin from an isolated position.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#update-isolated-margin)
+    Args:
+      asset: Asset index.
+      is_buy: Position side; true for long, false for short.
+      ntli: Margin delta in native token lots.
+      vault_address: Optional vault address for the signed action.
+      expires_after: Optional expiration timestamp for the signed action.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#update-isolated-margin)
     """
     action: UpdateIsolatedMarginAction = {
       'type': 'updateIsolatedMargin',
@@ -62,7 +70,14 @@ class UpdateIsolatedMargin(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Target leverage for isolated margin with an alternate action.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#update-isolated-margin)
+    Args:
+      asset: Asset index.
+      leverage: Target leverage as a decimal string.
+      vault_address: Optional vault address for the signed action.
+      expires_after: Optional expiration timestamp for the signed action.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#update-isolated-margin)
     """
     action: TopUpIsolatedOnlyMarginAction = {
       'type': 'topUpIsolatedOnlyMargin',

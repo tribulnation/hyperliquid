@@ -14,7 +14,7 @@ class TokenDelegateAction(TypedDict):
   nonce: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -26,7 +26,15 @@ class TokenDelegate(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Delegate or undelegate stake to a validator.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#delegate-or-undelegate-stake-from-validator)
+    Args:
+      validator: Validator address.
+      is_undelegate: Whether to undelegate instead of delegate.
+      wei: Stake amount in wei.
+      signature_chain_id: Chain id used for the user-signed action.
+      nonce: Optional action nonce. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#delegate-or-undelegate-stake-from-validator)
     """
     ts = timestamp.now() if nonce is None else nonce
     action: TokenDelegateAction = {

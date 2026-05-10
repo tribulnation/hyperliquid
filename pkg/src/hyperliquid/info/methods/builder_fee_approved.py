@@ -11,10 +11,12 @@ class BuilderFeeApproved(InfoMixin):
   ) -> BuilderFeeApprovedResponse:
     """Return the max builder fee approved.
 
-    - `user`: Account address.
-    - `builder`: Builder address.
+    Args:
+      user: Account address.
+      builder: Builder address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#check-builder-fee-approval)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#check-builder-fee-approval)
     """
     r = await self.request({
       'type': 'maxBuilderFee',

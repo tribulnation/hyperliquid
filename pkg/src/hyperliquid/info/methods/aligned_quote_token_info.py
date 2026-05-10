@@ -9,17 +9,19 @@ class AlignedQuoteTokenInfoResponse(TypedDict):
   dailyAmountOwed: list[tuple[str, str]]
   predictedRate: str
 
-adapter = pydantic.TypeAdapter(AlignedQuoteTokenInfoResponse)
+adapter = pydantic.TypeAdapter(AlignedQuoteTokenInfoResponse | None)
 
 class AlignedQuoteTokenInfo(InfoMixin):
   async def aligned_quote_token_info(
     self, token: int
-  ) -> AlignedQuoteTokenInfoResponse:
+  ) -> AlignedQuoteTokenInfoResponse | None:
     """Return aligned quote token status for a token index.
 
-    - `token`: Token index.
+    Args:
+      token: Token index.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-aligned-quote-token-status)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-aligned-quote-token-status)
     """
     r = await self.request({'type': 'alignedQuoteTokenInfo', 'token': token})
     return adapter.validate_python(r) if self.validate else r

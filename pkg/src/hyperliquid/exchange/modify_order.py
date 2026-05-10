@@ -38,7 +38,7 @@ class ModifyOrderAction(TypedDict):
   order: Order
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -50,10 +50,14 @@ class ModifyOrder(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Modify a single order.
 
-    - `oid`: Order id or cloid.
-    - `order`: Order wire object.
+    Args:
+      oid: Order id or cloid.
+      order: Order wire object.
+      vault_address: Optional vault address for the signed action.
+      expires_after: Optional expiration timestamp for the signed action.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#modify-an-order)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#modify-an-order)
     """
     action: ModifyOrderAction = {
       'type': 'modify',

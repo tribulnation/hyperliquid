@@ -33,9 +33,13 @@ class CancelOrders(ExchangeMixin):
   ) -> ExchangeResponse[CancelResponse]:
     """Cancel one or more orders.
 
-    - `cancels`: Cancel wire objects with asset + order id.
+    Args:
+      cancels: Cancel wire objects with asset + order id.
+      vault_address: Optional vault address for the signed action.
+      expires_after: Optional expiration timestamp for the signed action.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#cancel-order-s)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#cancel-order-s)
     """
     action = {
       'type': 'cancel',

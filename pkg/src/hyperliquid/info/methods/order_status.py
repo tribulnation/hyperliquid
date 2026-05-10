@@ -85,10 +85,12 @@ class OrderStatusInfo(InfoMixin):
   ) -> OrderStatusResponse:
     """Return order status by order id or client order id.
 
-    - `user`: Account address.
-    - `oid`: Order id or 16-byte client order id hex string.
+    Args:
+      user: Account address.
+      oid: Order id or 16-byte client order id hex string.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-order-status-by-oid-or-cloid)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-order-status-by-oid-or-cloid)
     """
     r = await self.request({'type': 'orderStatus', 'user': user, 'oid': oid})
     return adapter.validate_python(r) if self.validate else r

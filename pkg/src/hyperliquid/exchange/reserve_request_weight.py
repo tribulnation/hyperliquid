@@ -10,7 +10,7 @@ class ReserveRequestWeightAction(TypedDict):
   weight: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -21,7 +21,12 @@ class ReserveRequestWeight(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Reserve additional actions.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#reserve-additional-actions)
+    Args:
+      weight: Additional request weight to reserve.
+      expires_after: Optional expiration timestamp for the signed action.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#reserve-additional-actions)
     """
     action: ReserveRequestWeightAction = {
       'type': 'reserveRequestWeight',

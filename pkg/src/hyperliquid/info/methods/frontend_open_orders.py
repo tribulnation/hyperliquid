@@ -43,11 +43,13 @@ class FrontendOpenOrders(InfoMixin):
   ) -> FrontendOpenOrdersResponse:
     """Return open orders with additional frontend info.
 
-    - `user`: Account address.
-    - `dex`: Perp dex name. Defaults to the empty string which represents the
-      first perp dex.
+    Args:
+      user: Account address.
+      dex: Perp dex name. Defaults to the empty string which represents the
+        first perp dex.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-open-orders-with-additional-frontend-info)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-open-orders-with-additional-frontend-info)
     """
     params = {'type': 'frontendOpenOrders', 'user': user}
     if dex is not None:

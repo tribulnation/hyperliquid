@@ -26,9 +26,11 @@ class UserFundings(StreamsMixin):
   async def user_fundings(self, user: str):
     """Stream user funding updates.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('userFundings', {'user': user})
     user_l = user.lower()

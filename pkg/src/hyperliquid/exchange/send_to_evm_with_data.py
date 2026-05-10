@@ -19,7 +19,7 @@ class SendToEvmWithDataAction(TypedDict):
   nonce: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -33,7 +33,20 @@ class SendToEvmWithData(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Send to EVM with data payload.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#send-to-evm-with-data)
+    Args:
+      token: Token symbol or token id to send.
+      amount: Decimal amount string.
+      source_dex: Source DEX name. Use an empty string for the main DEX.
+      destination_recipient: Recipient on the destination EVM chain.
+      address_encoding: Encoding used for the destination recipient.
+      destination_chain_id: Destination EVM chain id.
+      gas_limit: Gas limit for the destination call.
+      data: Hex-encoded calldata.
+      signature_chain_id: Chain id used for the user-signed action.
+      nonce: Optional action nonce. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#send-to-evm-with-data)
     """
     ts = timestamp.now() if nonce is None else nonce
     action: SendToEvmWithDataAction = {

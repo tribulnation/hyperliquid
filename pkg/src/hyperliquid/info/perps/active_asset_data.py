@@ -30,10 +30,12 @@ class ActiveAssetData(InfoMixin):
   ) -> ActiveAssetDataResponse:
     """Return user's active asset data.
 
-    - `user`: Account address.
-    - `coin`: Coin, e.g. "ETH".
+    Args:
+      user: Account address.
+      coin: Coin, e.g. "ETH".
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-users-active-asset-data)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-users-active-asset-data)
     """
     r = await self.request({'type': 'activeAssetData', 'user': user, 'coin': coin})
     return adapter.validate_python(r) if self.validate else r

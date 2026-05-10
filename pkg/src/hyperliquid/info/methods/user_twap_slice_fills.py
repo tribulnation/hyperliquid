@@ -49,9 +49,11 @@ class UserTwapSliceFills(InfoMixin):
   ) -> UserTwapSliceFillsResponse:
     """Return a user's TWAP slice fills.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-twap-slice-fills)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-twap-slice-fills)
     """
     r = await self.request({'type': 'userTwapSliceFills', 'user': user})
     return adapter.validate_python(r) if self.validate else r

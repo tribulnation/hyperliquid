@@ -17,11 +17,13 @@ class FundingHistory(InfoMixin):
   ) -> list[FundingHistoryEntry]:
     """Return historical funding rates, at most 500 entries. Use `funding_history_paged` for more.
 
-    - `coin`: Coin, e.g. "ETH".
-    - `start_time`: Start time in milliseconds, inclusive.
-    - `end_time`: End time in milliseconds, inclusive.
+    Args:
+      coin: Coin, e.g. "ETH".
+      start_time: Start time in milliseconds, inclusive.
+      end_time: End time in milliseconds, inclusive.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-historical-funding-rates)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-historical-funding-rates)
     """
     params: dict[str, object] = {
       'type': 'fundingHistory',
@@ -39,11 +41,13 @@ class FundingHistory(InfoMixin):
   ) -> AsyncIterable[list[FundingHistoryEntry]]:
     """Return historical funding rates, automatically paginating the results.
 
-    - `coin`: Coin, e.g. "ETH".
-    - `start_time`: Start time in milliseconds, inclusive.
-    - `end_time`: End time in milliseconds, inclusive.
+    Args:
+      coin: Coin, e.g. "ETH".
+      start_time: Start time in milliseconds, inclusive.
+      end_time: End time in milliseconds, inclusive.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-historical-funding-rates)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-historical-funding-rates)
     """
     while end_time is None or start_time < end_time:
       fundings = await self.funding_history(coin, start_time, end_time=end_time)

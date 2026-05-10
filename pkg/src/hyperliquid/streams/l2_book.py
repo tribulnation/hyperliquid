@@ -29,11 +29,13 @@ class L2Book(StreamsMixin):
   ):
     """Stream L2 book updates.
 
-    - `coin`: Asset symbol.
-    - `n_sig_figs`: Aggregate levels to significant figures.
-    - `mantissa`: Only allowed when `n_sig_figs` is 5.
+    Args:
+      coin: Asset symbol.
+      n_sig_figs: Aggregate levels to significant figures.
+      mantissa: Only allowed when `n_sig_figs` is 5.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions#subscription-messages)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions#subscription-messages)
     """
     params: L2BookParams = {'coin': coin}
     if n_sig_figs is not None:

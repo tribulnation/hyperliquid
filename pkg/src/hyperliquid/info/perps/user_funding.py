@@ -27,11 +27,13 @@ class UserFunding(InfoMixin):
   ) -> list[UserFundingEntry]:
     """Return a user's funding history.
 
-    - `user`: Account address.
-    - `start_time`: Start time in milliseconds, inclusive.
-    - `end_time`: End time in milliseconds, inclusive.
+    Args:
+      user: Account address.
+      start_time: Start time in milliseconds, inclusive.
+      end_time: End time in milliseconds, inclusive.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-a-users-funding-history-or-non-funding-ledger-updates)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-a-users-funding-history-or-non-funding-ledger-updates)
     """
     params: dict[str, object] = {
       'type': 'userFunding',
@@ -49,9 +51,10 @@ class UserFunding(InfoMixin):
   ) -> AsyncIterable[list[UserFundingEntry]]:
     """Return a user's funding history, automatically paginating the results.
 
-    - `user`: Account address.
-    - `start_time`: Start time in milliseconds, inclusive.
-    - `end_time`: End time in milliseconds, inclusive.
+    Args:
+      user: Account address.
+      start_time: Start time in milliseconds, inclusive.
+      end_time: End time in milliseconds, inclusive.
     """
     while end_time is None or start_time < end_time:
       fundings = await self.user_funding(user, start_time, end_time=end_time)

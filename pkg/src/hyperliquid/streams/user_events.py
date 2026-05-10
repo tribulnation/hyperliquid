@@ -68,9 +68,11 @@ class UserEvents(StreamsMixin):
   async def user_events(self, user: str):
     """Stream user events.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('userEvents', {'user': user})
     def mapper(msg) -> WsUserEvent:

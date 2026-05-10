@@ -13,7 +13,7 @@ class UsdSendAction(TypedDict):
   time: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -25,7 +25,14 @@ class UsdcTransfer(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Core USDC transfer.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#core-usdc-transfer)
+    Args:
+      destination: Destination address.
+      amount: Decimal amount string.
+      signature_chain_id: Chain id used for the user-signed action.
+      time: Optional action timestamp. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#core-usdc-transfer)
     """
     ts = timestamp.now()
     action: UsdSendAction = {

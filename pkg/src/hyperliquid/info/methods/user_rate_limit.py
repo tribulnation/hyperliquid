@@ -18,9 +18,11 @@ class UserRateLimit(InfoMixin):
   async def user_rate_limit(self, user: str) -> UserRateLimitResponse:
     """Return rate limit info for a user.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-user-rate-limits)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-user-rate-limits)
     """
     r = await self.request({'type': 'userRateLimit', 'user': user})
     return adapter.validate_python(r) if self.validate else r

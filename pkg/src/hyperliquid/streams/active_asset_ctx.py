@@ -42,9 +42,11 @@ class ActiveAssetCtx(StreamsMixin):
   async def active_asset_ctx(self, coin: str):
     """Stream active asset context.
 
-    - `coin`: Asset symbol.
+    Args:
+      coin: Asset symbol.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('activeAssetCtx', {'coin': coin})
     coin_l = coin.lower()

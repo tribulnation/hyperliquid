@@ -13,7 +13,7 @@ class ApproveBuilderFeeAction(TypedDict):
   nonce: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -25,7 +25,14 @@ class ApproveBuilderFee(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Approve a maximum builder fee rate.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#approve-a-builder-fee)
+    Args:
+      max_fee_rate: Maximum fee rate to approve.
+      builder: Builder address.
+      signature_chain_id: Chain id used for the user-signed action.
+      nonce: Optional action nonce. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#approve-a-builder-fee)
     """
     ts = timestamp.now() if nonce is None else nonce
     action: ApproveBuilderFeeAction = {

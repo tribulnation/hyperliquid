@@ -41,7 +41,7 @@ class BatchModifyAction(TypedDict):
   modifies: list[Modify]
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -53,9 +53,13 @@ class ModifyOrders(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Modify multiple orders.
 
-    - `modifies`: Modify wire objects.
+    Args:
+      modifies: Modify wire objects.
+      vault_address: Optional vault address for the signed action.
+      expires_after: Optional expiration timestamp for the signed action.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#modify-multiple-orders)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#modify-multiple-orders)
     """
     action: BatchModifyAction = {
       'type': 'batchModify',

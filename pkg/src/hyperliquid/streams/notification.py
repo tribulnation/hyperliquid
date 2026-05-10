@@ -15,9 +15,11 @@ class Notification(StreamsMixin):
   async def notification(self, user: str):
     """Stream notifications for a user.
 
-    - `user`: User address.
+    Args:
+      user: User address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('notification', {'user': user})
     def mapper(msg) -> NotificationData:

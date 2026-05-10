@@ -10,7 +10,7 @@ class ValidatorL1StreamAction(TypedDict):
   riskFreeRate: str
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -18,7 +18,11 @@ class ValidatorL1Stream(ExchangeMixin):
   async def validator_l1_stream(self, risk_free_rate: str) -> ExchangeResponse[DefaultResponse]:
     """Vote on risk-free rate for aligned quote asset.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#validator-vote-on-risk-free-rate-for-aligned-quote-asset)
+    Args:
+      risk_free_rate: Risk-free rate vote as a decimal string.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#validator-vote-on-risk-free-rate-for-aligned-quote-asset)
     """
     action: ValidatorL1StreamAction = {
       'type': 'validatorL1Stream',

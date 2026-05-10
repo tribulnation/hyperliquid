@@ -13,7 +13,7 @@ class UserDexAbstractionAction(TypedDict):
   nonce: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -25,7 +25,14 @@ class UserDexAbstraction(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Enable HIP-3 DEX abstraction (deprecated).
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#enable-hip-3-dex-abstraction)
+    Args:
+      user: User address.
+      enabled: Whether DEX abstraction is enabled.
+      signature_chain_id: Chain id used for the user-signed action.
+      nonce: Optional action nonce. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#enable-hip-3-dex-abstraction)
     """
     ts = timestamp.now() if nonce is None else nonce
     action: UserDexAbstractionAction = {

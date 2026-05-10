@@ -21,9 +21,11 @@ class BorrowLendReserveState(InfoMixin):
   ) -> BorrowLendReserveStateResponse:
     """Return borrow/lend reserve state for a token index.
 
-    - `token`: Token index.
+    Args:
+      token: Token index.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-borrow-lend-reserve-state)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-borrow-lend-reserve-state)
     """
     r = await self.request({'type': 'borrowLendReserveState', 'token': token})
     return adapter.validate_python(r) if self.validate else r

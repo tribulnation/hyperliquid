@@ -20,7 +20,7 @@ class CancelData(TypedDict):
   statuses: list[CancelStatus]
 
 class CancelByCloidResponse(TypedDict):
-  type: Literal['cancelByCloid']
+  type: Literal['cancelByCloid', 'cancel']
   data: CancelData
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[CancelByCloidResponse])
@@ -33,9 +33,13 @@ class CancelByCloidOrders(ExchangeMixin):
   ) -> ExchangeResponse[CancelByCloidResponse]:
     """Cancel one or more orders by cloid.
 
-    - `cancels`: Cancel wire objects with asset + cloid.
+    Args:
+      cancels: Cancel wire objects with asset + cloid.
+      vault_address: Optional vault address for the signed action.
+      expires_after: Optional expiration timestamp for the signed action.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#cancel-order-s-by-cloid)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#cancel-order-s-by-cloid)
     """
     action = {
       'type': 'cancelByCloid',

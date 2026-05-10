@@ -10,7 +10,7 @@ class ScheduleCancelAction(TypedDict, total=False):
   time: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -22,10 +22,14 @@ class ScheduleCancelOrders(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Schedule a cancel-all operation.
 
-    - `time`: UTC millis when all open orders should be canceled. If `None`,
-      removes the scheduled cancel operation.
+    Args:
+      time: UTC millis when all open orders should be canceled. If `None`,
+        removes the scheduled cancel operation.
+      vault_address: Optional vault address for the signed action.
+      expires_after: Optional expiration timestamp for the signed action.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#schedule-cancel-dead-man-s-switch)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#schedule-cancel-dead-man-s-switch)
     """
     action: ScheduleCancelAction = {'type': 'scheduleCancel'}
     if time is not None:

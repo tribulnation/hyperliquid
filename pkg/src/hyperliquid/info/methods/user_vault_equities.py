@@ -16,9 +16,11 @@ class UserVaultEquities(InfoMixin):
   ) -> UserVaultEquitiesResponse:
     """Return a user's vault equities.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-vault-deposits)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-vault-deposits)
     """
     r = await self.request({'type': 'userVaultEquities', 'user': user})
     return adapter.validate_python(r) if self.validate else r

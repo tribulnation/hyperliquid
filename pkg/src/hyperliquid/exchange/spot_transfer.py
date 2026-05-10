@@ -14,7 +14,7 @@ class SpotSendAction(TypedDict):
   time: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -26,7 +26,15 @@ class SpotTransfer(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Core spot transfer.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#core-spot-transfer)
+    Args:
+      destination: Destination address.
+      token: Spot token to transfer.
+      amount: Decimal amount string.
+      signature_chain_id: Chain id used for the user-signed action.
+      time: Optional action timestamp. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#core-spot-transfer)
     """
     ts = timestamp.now()
     action: SpotSendAction = {

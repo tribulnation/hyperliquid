@@ -30,9 +30,11 @@ class OrderUpdates(StreamsMixin):
   async def order_updates(self, user: str):
     """Stream order updates for a user.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('orderUpdates', {'user': user})
     def mapper(msg) -> OrderUpdatesData:

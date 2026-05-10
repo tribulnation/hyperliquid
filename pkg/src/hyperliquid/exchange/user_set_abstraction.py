@@ -15,7 +15,7 @@ class UserSetAbstractionAction(TypedDict):
   nonce: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -27,7 +27,14 @@ class UserSetAbstraction(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Set user abstraction.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#set-user-abstraction)
+    Args:
+      user: User address.
+      abstraction: Abstraction mode to set.
+      signature_chain_id: Chain id used for the user-signed action.
+      nonce: Optional action nonce. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#set-user-abstraction)
     """
     ts = timestamp.now() if nonce is None else nonce
     action: UserSetAbstractionAction = {

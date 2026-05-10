@@ -1,7 +1,7 @@
 from hyperliquid.core import TypedDict
 import pydantic
 
-from hyperliquid.core.exc import ApiError
+from typed_core.exceptions import ApiError
 from hyperliquid.info.core import InfoMixin
 
 class L2BookLevel(TypedDict):
@@ -27,11 +27,13 @@ class L2Book(InfoMixin):
   ) -> L2BookResponse:
     """Return an L2 book snapshot.
 
-    - `coin`: from `spot_meta['universe'][idx]['name']` or `perp_meta['universe'][idx]['name']`. See the [docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/asset-ids) for full details.
-    - `n_sig_figs`: Aggregate levels to significant figures.
-    - `mantissa`: Only allowed when `n_sig_figs` is 5.
+    Args:
+      coin: From `spot_meta['universe'][idx]['name']` or `perp_meta['universe'][idx]['name']`. See the [docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/asset-ids) for full details.
+      n_sig_figs: Aggregate levels to significant figures.
+      mantissa: Only allowed when `n_sig_figs` is 5.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#l2-book-snapshot)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#l2-book-snapshot)
     """
     params: dict[str, object] = {'type': 'l2Book', 'coin': coin}
     if n_sig_figs is not None:

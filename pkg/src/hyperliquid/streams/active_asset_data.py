@@ -33,10 +33,12 @@ class ActiveAssetData(StreamsMixin):
   async def active_asset_data(self, user: str, coin: str):
     """Stream active asset data for a user.
 
-    - `user`: Account address.
-    - `coin`: Asset symbol.
+    Args:
+      user: Account address.
+      coin: Asset symbol.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('activeAssetData', {'user': user, 'coin': coin})
     user_l = user.lower()

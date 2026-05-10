@@ -12,7 +12,7 @@ class CDepositAction(TypedDict):
   nonce: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -24,7 +24,13 @@ class StakingDeposit(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Deposit native token into staking.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#deposit-into-staking)
+    Args:
+      wei: Amount to deposit in wei.
+      signature_chain_id: Chain id used for the user-signed action.
+      nonce: Optional action nonce. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#deposit-into-staking)
     """
     ts = timestamp.now() if nonce is None else nonce
     action: CDepositAction = {

@@ -9,7 +9,7 @@ class NoopAction(TypedDict):
   type: Literal['noop']
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -17,7 +17,11 @@ class Noop(ExchangeMixin):
   async def noop(self, *, expires_after: int | None = None) -> ExchangeResponse[DefaultResponse]:
     """Invalidate a pending nonce (noop).
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#invalidate-pending-nonce-noop)
+    Args:
+      expires_after: Optional expiration timestamp for the signed action.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#invalidate-pending-nonce-noop)
     """
     action: NoopAction = {'type': 'noop'}
     ts = timestamp.now()

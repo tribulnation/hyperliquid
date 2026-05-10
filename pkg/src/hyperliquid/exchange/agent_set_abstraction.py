@@ -12,7 +12,7 @@ class AgentSetAbstractionAction(TypedDict):
   abstraction: AgentAbstraction
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -20,7 +20,11 @@ class AgentSetAbstraction(ExchangeMixin):
   async def agent_set_abstraction(self, abstraction: AgentAbstraction) -> ExchangeResponse[DefaultResponse]:
     """Set user abstraction (agent).
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#set-user-abstraction-agent)
+    Args:
+      abstraction: Agent abstraction mode to set.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#set-user-abstraction-agent)
     """
     action: AgentSetAbstractionAction = {
       'type': 'agentSetAbstraction',

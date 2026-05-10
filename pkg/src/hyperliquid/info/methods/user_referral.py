@@ -24,9 +24,12 @@ class ReferrerData(TypedDict):
   code: str
   referralStates: list[ReferralStateEntry]
 
+class ReferrerRequirementData(TypedDict):
+  required: str
+
 class ReferrerState(TypedDict):
   stage: str
-  data: ReferrerData
+  data: ReferrerData | ReferrerRequirementData
 
 class UserReferralResponse(TypedDict):
   referredBy: ReferredBy | None
@@ -44,9 +47,11 @@ class UserReferral(InfoMixin):
   async def user_referral(self, user: str) -> UserReferralResponse:
     """Return a user's referral information.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-referral-information)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-referral-information)
     """
     r = await self.request({'type': 'referral', 'user': user})
     return adapter.validate_python(r) if self.validate else r

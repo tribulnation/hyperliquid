@@ -16,10 +16,10 @@ class TokenDetailsResponse(TypedDict):
   midPx: str
   markPx: str
   prevDayPx: str
-  genesis: TokenGenesis
+  genesis: TokenGenesis | None
   deployer: str | None
-  deployGas: str
-  deployTime: str
+  deployGas: str | None
+  deployTime: str | None
   seededUsdc: str
   nonCirculatingUserBalances: list[tuple[str, str]]
   futureEmissions: str
@@ -30,9 +30,11 @@ class TokenDetails(InfoMixin):
   async def token_details(self, token_id: str) -> TokenDetailsResponse:
     """Return token details.
 
-    - `token_id`: Onchain token id.
+    Args:
+      token_id: Onchain token id.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-information-about-a-token)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-information-about-a-token)
     """
     r = await self.request({'type': 'tokenDetails', 'tokenId': token_id})
     return adapter.validate_python(r) if self.validate else r

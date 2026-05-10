@@ -11,9 +11,11 @@ class PerpDexStatus(InfoMixin):
   async def perp_dex_status(self, dex: str = '') -> PerpDexStatusResponse:
     """Return perp dex status.
 
-    - `dex`: Perp dex name. The empty string represents the first perp dex.
+    Args:
+      dex: Perp dex name. The empty string represents the first perp dex.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#get-perp-market-status)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#get-perp-market-status)
     """
     r = await self.request({'type': 'perpDexStatus', 'dex': dex})
     return adapter.validate_python(r) if self.validate else r

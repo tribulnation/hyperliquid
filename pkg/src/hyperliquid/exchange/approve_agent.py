@@ -13,7 +13,7 @@ class ApproveAgentAction(TypedDict, total=False):
   nonce: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -26,7 +26,14 @@ class ApproveAgent(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Approve an API wallet (agent).
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#approve-an-api-wallet)
+    Args:
+      agent_address: API wallet address to approve.
+      signature_chain_id: Chain id used for the user-signed action.
+      agent_name: Optional display name for the API wallet.
+      nonce: Optional action nonce. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#approve-an-api-wallet)
     """
     ts = timestamp.now() if nonce is None else nonce
     action: ApproveAgentAction = {

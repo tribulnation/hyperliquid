@@ -9,7 +9,7 @@ class AgentEnableDexAbstractionAction(TypedDict):
   type: Literal['agentEnableDexAbstraction']
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -17,7 +17,8 @@ class AgentEnableDexAbstraction(ExchangeMixin):
   async def agent_enable_dex_abstraction(self) -> ExchangeResponse[DefaultResponse]:
     """Enable HIP-3 DEX abstraction (agent, deprecated).
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#enable-hip-3-dex-abstraction-agent)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#enable-hip-3-dex-abstraction-agent)
     """
     action: AgentEnableDexAbstractionAction = {'type': 'agentEnableDexAbstraction'}
     ts = timestamp.now()

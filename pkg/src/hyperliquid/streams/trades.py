@@ -24,9 +24,11 @@ class Trades(StreamsMixin):
   async def trades(self, coin: str):
     """Stream trades for a coin.
 
-    - `coin`: Asset symbol.
+    Args:
+      coin: Asset symbol.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('trades', {'coin': coin})
     coin_l = coin.lower()

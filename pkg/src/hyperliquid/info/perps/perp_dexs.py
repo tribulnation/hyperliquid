@@ -17,7 +17,8 @@ class PerpDexs(InfoMixin):
   async def perp_dexs(self) -> list[PerpDex|None]:
     """Return all perp dexes.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-all-perpetual-dexs)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-all-perpetual-dexs)
     """
     r = await self.request({'type': 'perpDexs'})
     return adapter.validate_python(r) if self.validate else r

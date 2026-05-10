@@ -39,7 +39,7 @@ class PerpAssetCtx(TypedDict):
   prevDayPx: str
   dayBaseVlm: NotRequired[str]
 
-AllPerpMetasResponse = list[tuple[PerpMeta, list[PerpAssetCtx]]]
+AllPerpMetasResponse = list[PerpMeta]
 
 adapter = pydantic.TypeAdapter(AllPerpMetasResponse)
 
@@ -47,7 +47,8 @@ class AllPerpMetas(InfoMixin):
   async def all_perp_metas(self) -> AllPerpMetasResponse:
     """Return all perpetuals metadata and asset contexts.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-all-perpetuals-metadata-universe-and-margin-tables)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-all-perpetuals-metadata-universe-and-margin-tables)
     """
     r = await self.request({'type': 'allPerpMetas'})
     return adapter.validate_python(r) if self.validate else r

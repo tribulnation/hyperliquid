@@ -46,7 +46,8 @@ class SpotMeta(InfoMixin):
   async def spot_meta(self) -> SpotMetaResponse:
     """Return spot universe and token metadata.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot)
     """
     r = await self.request({'type': 'spotMeta'})
     return adapter.validate_python(r) if self.validate else r

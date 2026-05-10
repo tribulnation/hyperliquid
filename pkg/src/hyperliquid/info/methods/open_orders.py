@@ -29,11 +29,13 @@ class OpenOrders(InfoMixin):
   ) -> list[OpenOrder]:
     """Return a user's open orders.
 
-    - `user`: Account address.
-    - `dex`: Perp dex name. Defaults to the empty string which represents the
-      first perp dex.
+    Args:
+      user: Account address.
+      dex: Perp dex name. Defaults to the empty string which represents the
+        first perp dex.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-open-orders)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-open-orders)
     """
     params = {'type': 'openOrders', 'user': user}
     if dex is not None:

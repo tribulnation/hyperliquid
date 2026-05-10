@@ -14,7 +14,7 @@ class UsdClassTransferAction(TypedDict):
   subaccount: NotRequired[str]
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -27,7 +27,15 @@ class UsdClassTransfer(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Transfer USDC between spot and perp accounts.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#transfer-from-spot-account-to-perp-account-and-vice-versa)
+    Args:
+      amount: Decimal amount string.
+      to_perp: Whether to transfer from spot to perp.
+      signature_chain_id: Chain id used for the user-signed action.
+      subaccount: Optional subaccount address.
+      nonce: Optional action nonce. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#transfer-from-spot-account-to-perp-account-and-vice-versa)
     """
     ts = timestamp.now() if nonce is None else nonce
     action: UsdClassTransferAction = {

@@ -35,12 +35,14 @@ class CandleSnapshot(InfoMixin):
   ) -> CandleSnapshotResponse:
     """Return a candle snapshot.
 
-    - `coin`: Asset being queried.
-    - `interval`: Time interval of the candles.
-    - `start_time`: Timestamp of the first candle in the snapshot (epoch ms).
-    - `end_time`: Timestamp of the last candle in the snapshot (epoch ms).
+    Args:
+      coin: Asset being queried.
+      interval: Time interval of the candles.
+      start_time: Timestamp of the first candle in the snapshot (epoch ms).
+      end_time: Timestamp of the last candle in the snapshot (epoch ms).
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#candle-snapshot)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#candle-snapshot)
     """
     r = await self.request({
       'type': 'candleSnapshot',

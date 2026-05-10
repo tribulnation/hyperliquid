@@ -15,9 +15,11 @@ class StakingDelegations(InfoMixin):
   async def staking_delegations(self, user: str) -> StakingDelegationsResponse:
     """Return a user's staking delegations.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-staking-delegations)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-staking-delegations)
     """
     r = await self.request({'type': 'delegations', 'user': user})
     return adapter.validate_python(r) if self.validate else r

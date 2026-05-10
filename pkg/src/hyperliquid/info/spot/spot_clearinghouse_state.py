@@ -18,9 +18,11 @@ class SpotClearinghouseState(InfoMixin):
   async def spot_clearinghouse_state(self, user: str) -> SpotClearinghouseStateResponse:
     """Return a user's spot token balances.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot#retrieve-a-users-token-balances)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot#retrieve-a-users-token-balances)
     """
     r = await self.request({'type': 'spotClearinghouseState', 'user': user})
     return adapter.validate_python(r) if self.validate else r

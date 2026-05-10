@@ -44,12 +44,14 @@ class UserFillsByTime(InfoMixin):
   ) -> list[UserFill]:
     """Return a user's fills within a time range.
 
-    - `user`: Account address.
-    - `start_time`: Start time in milliseconds, inclusive.
-    - `end_time`: End time in milliseconds, inclusive.
-    - `aggregate_by_time`: Aggregate partial fills in the same block.
+    Args:
+      user: Account address.
+      start_time: Start time in milliseconds, inclusive.
+      end_time: End time in milliseconds, inclusive.
+      aggregate_by_time: Aggregate partial fills in the same block.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-fills-by-time)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-fills-by-time)
     """
     params: dict[str, object] = {
       'type': 'userFillsByTime',
@@ -70,12 +72,14 @@ class UserFillsByTime(InfoMixin):
   ) -> AsyncIterable[list[UserFill]]:
     """Return a user's fills within a time range, automatically paginating the results.
 
-    - `user`: Account address.
-    - `start_time`: Start time in milliseconds, inclusive.
-    - `end_time`: End time in milliseconds, inclusive.
-    - `aggregate_by_time`: Aggregate partial fills in the same block.
+    Args:
+      user: Account address.
+      start_time: Start time in milliseconds, inclusive.
+      end_time: End time in milliseconds, inclusive.
+      aggregate_by_time: Aggregate partial fills in the same block.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-fills-by-time)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-fills-by-time)
     """
     while end_time is None or start_time < end_time:
       fills = await self.user_fills_by_time(user, start_time, end_time=end_time, aggregate_by_time=aggregate_by_time)

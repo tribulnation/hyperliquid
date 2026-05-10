@@ -39,9 +39,11 @@ class UserTwapHistory(StreamsMixin):
   async def user_twap_history(self, user: str):
     """Stream TWAP history for a user.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('userTwapHistory', {'user': user})
     user_l = user.lower()

@@ -36,9 +36,11 @@ class WebData3(StreamsMixin):
   async def web_data3(self, user: str):
     """Stream WebData3 updates for a user.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
     stream = await self.subscribe('webData3', {'user': user})
     user_l = user.lower()

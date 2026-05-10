@@ -65,9 +65,11 @@ class UserFees(InfoMixin):
   async def user_fees(self, user: str) -> UserFeesResponse:
     """Return a user's fee schedule and rates.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-fees)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-fees)
     """
     r = await self.request({'type': 'userFees', 'user': user})
     return adapter.validate_python(r) if self.validate else r

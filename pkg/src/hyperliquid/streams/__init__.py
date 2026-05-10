@@ -1,5 +1,6 @@
 from dataclasses import dataclass as _dataclass
 from .all_mids import AllMids
+from .all_dexs_asset_ctxs import AllDexsAssetCtxs
 from .notification import Notification
 from .web_data3 import WebData3
 from .twap_states import TwapStates
@@ -22,6 +23,7 @@ from .bbo import Bbo
 @_dataclass
 class Streams(
   AllMids,
+  AllDexsAssetCtxs,
   Notification,
   WebData3,
   TwapStates,

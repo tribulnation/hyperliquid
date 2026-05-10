@@ -47,10 +47,12 @@ class UserFills(InfoMixin):
   ) -> UserFillsResponse:
     """Return a user's most recent fills.
 
-    - `user`: Account address.
-    - `aggregate_by_time`: Aggregate partial fills in the same block.
+    Args:
+      user: Account address.
+      aggregate_by_time: Aggregate partial fills in the same block.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-fills)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-fills)
     """
     params: dict[str, object] = {'type': 'userFills', 'user': user}
     if aggregate_by_time is not None:

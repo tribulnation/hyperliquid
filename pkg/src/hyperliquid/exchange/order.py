@@ -7,17 +7,19 @@ from hyperliquid.exchange.core import ExchangeMixin, ExchangeResponse, sign_l1_a
 
 TimeInForce = Literal['Alo', 'Ioc', 'Gtc']
 """Time in force.
-- `Alo`: Add liquidity only (i.e. post only).
-- `Ioc`: Immediate or cancel.
-- `Gtc`: Good til canceled.
+
+- Alo: Add liquidity only (i.e. post only).
+- Ioc: Immediate or cancel.
+- Gtc: Good til canceled.
 """
 
 class LimitDetails(TypedDict):
   tif: TimeInForce
   """Time in force.
-- `Alo`: Add liquidity only (i.e. post only).
-- `Ioc`: Immediate or cancel.
-- `Gtc`: Good til canceled.
+
+- Alo: Add liquidity only (i.e. post only).
+- Ioc: Immediate or cancel.
+- Gtc: Good til canceled.
 """
 
 class LimitType(TypedDict):
@@ -112,6 +114,18 @@ class PlaceOrder(ExchangeMixin):
     vault_address: str | None = None,
     expires_after: int | None = None,
   ) -> ExchangeResponse[OrderResponse]:
+    """Place one or more orders.
+
+    Args:
+      orders: Order wire objects.
+      grouping: Grouping mode for normal or TPSL orders.
+      builder: Optional builder fee information.
+      vault_address: Optional vault address for the signed action.
+      expires_after: Optional expiration timestamp for the signed action.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#place-an-order)
+    """
     action = {
       'type': 'order',
       'orders': [reorder(order) for order in orders],

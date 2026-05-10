@@ -17,7 +17,7 @@ class SendAssetAction(TypedDict):
   nonce: int
 
 class DefaultResponse(TypedDict):
-  type: Literal['default']
+  type: str
 
 adapter = pydantic.TypeAdapter(ExchangeResponse[DefaultResponse])
 
@@ -30,7 +30,18 @@ class SendAsset(ExchangeMixin):
   ) -> ExchangeResponse[DefaultResponse]:
     """Send assets between DEXs, spot, users, or subaccounts.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#send-asset)
+    Args:
+      destination: Destination user, subaccount, spot account, or DEX address.
+      source_dex: Source DEX name. Use an empty string for the main DEX.
+      destination_dex: Destination DEX name. Use an empty string for the main DEX.
+      token: Token symbol or token id to send.
+      amount: Decimal amount string.
+      from_subaccount: Source subaccount name, or empty string for the main account.
+      signature_chain_id: Chain id used for the user-signed action.
+      nonce: Optional action nonce. Defaults to the current timestamp.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/exchange-endpoint#send-asset)
     """
     ts = timestamp.now() if nonce is None else nonce
     action: SendAssetAction = {

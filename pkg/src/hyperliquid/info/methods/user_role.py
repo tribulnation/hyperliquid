@@ -44,9 +44,11 @@ class UserRole(InfoMixin):
   async def user_role(self, user: str) -> UserRoleResponse:
     """Return a user's role.
 
-    - `user`: Account address.
+    Args:
+      user: Account address.
 
-    > [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-role)
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-role)
     """
     r = await self.request({'type': 'userRole', 'user': user})
     return adapter.validate_python(r) if self.validate else r

@@ -3,9 +3,10 @@ from typing_extensions import Any, Mapping, Sequence
 import msgpack
 from eth_account.messages import encode_typed_data
 from eth_account.signers.local import LocalAccount
-from eth_utils import keccak, to_hex # type: ignore (wtf)
+from eth_utils import keccak, to_hex # type: ignore (pyright bug apparently)
 
 def address_to_bytes(address: str) -> bytes:
+  """Convert a hex EVM address to bytes."""
   return bytes.fromhex(address[2:] if address.startswith('0x') else address)
 
 def action_hash(
@@ -14,6 +15,7 @@ def action_hash(
   nonce: int,
   expires_after: int | None,
 ) -> bytes:
+  """Build the Hyperliquid L1 action hash used for signing."""
   data: bytes = msgpack.packb(action) # type: ignore
   data += nonce.to_bytes(8, 'big')
   if vault_address is None:
@@ -27,9 +29,11 @@ def action_hash(
   return keccak(data)
 
 def construct_phantom_agent(hash_bytes: bytes, mainnet: bool) -> dict[str, Any]:
+  """Build the phantom agent payload for L1 action signing."""
   return {'source': 'a' if mainnet else 'b', 'connectionId': hash_bytes}
 
 def l1_payload(phantom_agent: Mapping[str, Any]) -> dict[str, Any]:
+  """Build the EIP-712 payload for Hyperliquid L1 action signing."""
   return {
     'domain': {
       'chainId': 1337,
@@ -54,6 +58,7 @@ def l1_payload(phantom_agent: Mapping[str, Any]) -> dict[str, Any]:
   }
 
 def sign_inner(wallet: LocalAccount, data: Mapping[str, Any]) -> dict[str, Any]:
+  """Sign EIP-712 data and return Hyperliquid's signature shape."""
   structured_data = encode_typed_data(full_message=dict(data))
   signed = wallet.sign_message(structured_data)
   return {'r': to_hex(signed['r']), 's': to_hex(signed['s']), 'v': signed['v']}
@@ -63,6 +68,7 @@ def sign_l1_action(
   vault_address: str | None = None, nonce: int,
   expires_after: int | None = None, mainnet: bool = True
 ) -> dict[str, Any]:
+  """Sign an L1 exchange action."""
   hash_bytes = action_hash(action, vault_address, nonce, expires_after)
   phantom_agent = construct_phantom_agent(hash_bytes, mainnet)
   data = l1_payload(phantom_agent)
@@ -73,6 +79,7 @@ def user_signed_payload(
   payload_types: Sequence[Mapping[str, str]],
   action: Mapping[str, Any],
 ) -> dict[str, Any]:
+  """Build an EIP-712 payload for user-signed exchange actions."""
   chain_id = int(str(action['signatureChainId']), 16)
   return {
     'domain': {
@@ -99,6 +106,7 @@ def sign_user_signed_action(
   payload_types: Sequence[Mapping[str, str]],
   primary_type: str, mainnet: bool
 ) -> dict[str, Any]:
+  """Sign a Hyperliquid user-signed action."""
   action = dict(action)
   action['hyperliquidChain'] = 'Mainnet' if mainnet else 'Testnet'
   data = user_signed_payload(primary_type, payload_types, action)
