@@ -4,6 +4,7 @@
   <img alt="Hyperliquid" src="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-light.svg">
 </picture>
 
+---
 
 [![PyPI version](https://img.shields.io/pypi/v/typed-hyperliquid.svg)](https://pypi.org/project/typed-hyperliquid/)
 [![Python versions](https://img.shields.io/pypi/pyversions/typed-hyperliquid.svg)](https://pypi.org/project/typed-hyperliquid/)
