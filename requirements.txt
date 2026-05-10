@@ -5,4 +5,6 @@ pyright
 zensical
 mkdocstrings-python
 python-dotenv
+pytest
+pytest-asyncio
 -e pkg
