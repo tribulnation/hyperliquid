@@ -1,36 +1,36 @@
 # Typed Hyperliquid
 
-[![Hyperliquid](https://app.hyperliquid.xyz/images/logo-privy.svg)](https://app.hyperliquid.xyz/trade)
+[![PyPI version](https://img.shields.io/pypi/v/typed-hyperliquid.svg)](https://pypi.org/project/typed-hyperliquid/)
+[![Python versions](https://img.shields.io/pypi/pyversions/typed-hyperliquid.svg)](https://pypi.org/project/typed-hyperliquid/)
+[![Docs](https://img.shields.io/badge/docs-live-black)](https://hyperliquid.tribulnation.com/)
+[![License](https://img.shields.io/pypi/l/typed-hyperliquid.svg)](LICENSE)
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-light.svg">
+  <img alt="Hyperliquid" src="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-light.svg">
+</picture>
 
 > A fully typed, validated async client for the Hyperliquid API.
 
-**Use autocomplete instead of documentation.**
-
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  mids = await info.all_mids()
-  print(mids['BTC'])
+async with Hyperliquid.ws(public=True) as client:
+  stream = await client.streams.trades('BTC')
+  async for msg in stream:
+    for trade in msg:
+      print(trade['px'], trade['sz'], trade['side'])
 ```
 
 ## Why Typed Hyperliquid?
 
-- **🎯 Precise Types**: Strong typing throughout, so your editor can help before runtime does.
-- **✅ Automatic Validation**: Catch upstream API changes earlier, where they are easier to debug.
-- **⚡ Async First**: Built for concurrent, network-heavy workflows.
-- **🔒 Safer Usage**: Typed inputs and explicit errors reduce avoidable mistakes.
-- **🎨 Better DX**: Clear routing, sensible defaults, and minimal ceremony.
-- **📦 Practical Extras**: HTTP, request-response WS, streams, and exchange actions under one package.
-
-## Package Shape
-
-This package exposes four public entry points:
-
-- `Info` for read-only request-response access to the info endpoint
-- `Exchange` for signed exchange actions
-- `Streams` for WebSocket subscriptions
-- `Hyperliquid` as a convenience bundle of all three
+- **🎯 Precise Types**: Typed endpoint inputs and responses.
+- **✅ Runtime Validation**: Validated responses by default.
+- **⚡ Async First**: HTTP, WebSocket RPC, and subscriptions.
+- **📚 Full API Surface**: `client.info`, `client.exchange`, and
+  `client.streams`.
 
 ## Installation
 
@@ -38,62 +38,39 @@ This package exposes four public entry points:
 pip install typed-hyperliquid
 ```
 
-## Quick Start
-
-### Public reads
-
-Use `Info` for request-response reads over HTTP:
-
-```python
-from hyperliquid import Info
-
-async with Info.http() as info:
-  mids = await info.all_mids()
-  book = await info.l2_book('BTC')
-  print(mids['BTC'], book['levels'][0][0]['px'])
-```
-
-### Public streams
-
-Use `Streams` for subscription workflows:
-
-```python
-from hyperliquid import Streams
-
-async with Streams.new() as streams:
-  trades = await streams.trades('BTC')
-  async for batch in trades:
-    print(batch[0]['px'])
-    break
-```
-
-### Authenticated actions
-
-Hyperliquid auth is wallet-based, not API-key based:
+For authenticated exchange actions, set a private key:
 
 ```bash
 export HYPERLIQUID_PRIVATE_KEY="your_private_key"
 ```
 
+## Overview
+
+Typed Hyperliquid exposes the upstream API as three client surfaces:
+
+- `client.info`: public and account read methods like `all_mids`, `l2_book`,
+  `clearinghouse_state`, `user_fills`, and spot/perp metadata.
+- `client.exchange`: signed actions like placing orders, canceling orders,
+  transfers, withdrawals, staking, TWAPs, and leverage updates.
+- `client.streams`: WebSocket subscriptions like trades, books, candles,
+  user fills, user events, and open orders.
+
+Use `Hyperliquid.http()` or `Hyperliquid.ws()` depending on the transport you
+want for request-response methods:
+
 ```python
 from hyperliquid import Hyperliquid
 
 async with Hyperliquid.http() as client:
+  mids = await client.info.all_mids()
   result = await client.exchange.noop()
-  print(result['status'])
 ```
 
-## Transport Model
-
-This package intentionally separates Hyperliquid's three usage modes:
-
-- `Info.http()` and `Info.ws()` for read-only request-response calls
-- `Exchange.http(wallet)` and `Exchange.ws(wallet)` for signed exchange actions
-- `Streams.new()` for subscriptions
-- `Hyperliquid.http()` and `Hyperliquid.ws()` as convenience bundles
-
-`Exchange.http()` and `Exchange.ws()` accept either a wallet object or a raw private key. `Hyperliquid.http()` and `Hyperliquid.ws()` also accept those forms, and can additionally read `HYPERLIQUID_PRIVATE_KEY` when no wallet is passed.
+For testnet, pass `mainnet=False` and set `HYPERLIQUID_TESTNET_PRIVATE_KEY`.
 
 ## Documentation
 
-> [**Read the docs**](https://hyperliquid.tribulnation.com)
+- [**Read the docs**](https://hyperliquid.tribulnation.com)
+- [Getting Started](https://hyperliquid.tribulnation.com/getting-started/)
+- [API Overview](https://hyperliquid.tribulnation.com/api-overview/)
+- [API Keys / Wallet Setup](https://hyperliquid.tribulnation.com/api-keys/)
