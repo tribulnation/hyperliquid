@@ -12,10 +12,10 @@ For short request-response flows, plain construction is fine.
 The underlying HTTP and WebSocket clients open lazily on first use.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-info = Info.http()
-mids = await info.all_mids()
+client = Hyperliquid.http(public=True)
+mids = await client.info.all_mids()
 print(mids['BTC'])
 ```
 
@@ -24,10 +24,10 @@ That works because the internal HTTP client creates its `httpx.AsyncClient` when
 The same idea applies to request-response WebSocket usage:
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-info = Info.ws()
-book = await info.l2_book('BTC')
+client = Hyperliquid.ws(public=True)
+book = await client.info.l2_book('BTC')
 print(book['coin'])
 ```
 
@@ -36,11 +36,11 @@ print(book['coin'])
 Use `async with` when you want the client to open up front and close cleanly at the end of the block.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  mids = await info.all_mids()
-  book = await info.l2_book('BTC')
+async with Hyperliquid.http(public=True) as client:
+  mids = await client.info.all_mids()
+  book = await client.info.l2_book('BTC')
 ```
 
 This is the recommended style for:
@@ -52,15 +52,15 @@ This is the recommended style for:
 
 ## Streams
 
-For `Streams`, prefer `async with` almost always.
+For `client.streams`, prefer `async with` almost always.
 
 Subscriptions keep a WebSocket connection open until the client is closed.
 
 ```python
-from hyperliquid import Streams
+from hyperliquid import Hyperliquid
 
-async with Streams.new() as streams:
-  trades = await streams.trades('BTC')
+async with Hyperliquid.ws(public=True) as client:
+  trades = await client.streams.trades('BTC')
   async for batch in trades:
     print(batch[0]['px'])
 ```

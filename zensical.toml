@@ -8,9 +8,7 @@ Copyright &copy; 2026 Tribulnation
 """
 nav = [
   { "Intro" = "index.md" },
-  { "Getting Started" = "getting-started.md" },
-  { "Wallet Setup" = "api-keys.md" },
-  { "API Overview" = "api-overview.md" },
+  { "Authenticated Setup" = "authenticated-setup.md" },
   { "How To" = [
     { "Overview" = "how-to/index.md" },
     "how-to/place-and-manage-orders.md",
@@ -26,6 +24,7 @@ nav = [
     "reference/error-handling.md",
     "reference/env-vars.md",
     "reference/timestamps.md",
+    "reference/coverage.md",
     { "API" = [
       { "Overview" = "reference/api/index.md" },
       "reference/api/hyperliquid.md",

@@ -8,13 +8,12 @@ The client distinguishes between failure modes through explicit exception types.
 - `AuthError`: authentication or signing failures
 - `ApiError`: the remote API returned an application-level error
 - `ValidationError`: the response shape did not match the expected schema
-- `UserError`: incorrect local usage of the client
-- `ValueError`: missing `HYPERLIQUID_PRIVATE_KEY` when using wallet-backed convenience constructors
+- `LogicError`: incorrect local usage of the client
 
 ## Recommended Pattern
 
 ```python
-from hyperliquid.core import ApiError, AuthError, NetworkError, ValidationError
+from hyperliquid import ApiError, AuthError, NetworkError, ValidationError
 
 try:
   ...

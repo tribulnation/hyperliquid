@@ -2,10 +2,7 @@
 
 ## Public Usage
 
-No environment variables are required for:
-
-- `Info`
-- `Streams`
+No environment variables are required for public reads or public streams.
 
 ## Authenticated Usage
 
@@ -22,10 +19,8 @@ HYPERLIQUID_PRIVATE_KEY=
 Network selection is configured through function arguments, not environment variables:
 
 ```python
-from hyperliquid import Info, Streams, Hyperliquid
+from hyperliquid import Hyperliquid
 
-info = Info.http(mainnet=False)
-streams = Streams.new(mainnet=False)
 client = Hyperliquid.http(mainnet=False)
 ```
 

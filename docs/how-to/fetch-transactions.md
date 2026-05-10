@@ -1,6 +1,6 @@
 # Fetch Your Transactions
 
-Use `Info` for account history reads. These methods take a user address and time windows in UTC milliseconds where applicable.
+Use `client.info` for account history reads. These methods take a user address and time windows in UTC milliseconds where applicable.
 
 ```python
 from datetime import datetime, timedelta
@@ -16,10 +16,10 @@ start_ms = ts.dump(datetime.now() - timedelta(days=7))
 Use `user_fills()` for recent fills or `user_fills_by_time()` for a specific window.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  fills = await info.user_fills_by_time(user, start_ms, end_time=end_ms)
+async with Hyperliquid.http(public=True) as client:
+  fills = await client.info.user_fills_by_time(user, start_ms, end_time=end_ms)
   for fill in fills:
     print(fill['coin'], fill['side'], fill['px'], fill['sz'])
 ```
@@ -29,10 +29,10 @@ For large windows, use `user_fills_by_time_paged()`.
 ## Fetch Funding Payments
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  funding = await info.user_funding(user, start_ms, end_time=end_ms)
+async with Hyperliquid.http(public=True) as client:
+  funding = await client.info.user_funding(user, start_ms, end_time=end_ms)
   for entry in funding:
     delta = entry['delta']
     print(delta['coin'], delta['usdc'], delta['fundingRate'])
@@ -41,10 +41,10 @@ async with Info.http() as info:
 For long ranges, use `user_funding_paged()`.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  async for chunk in info.user_funding_paged(user, start_ms, end_time=end_ms):
+async with Hyperliquid.http(public=True) as client:
+  async for chunk in client.info.user_funding_paged(user, start_ms, end_time=end_ms):
     print(len(chunk))
 ```
 
@@ -53,10 +53,10 @@ async with Info.http() as info:
 Use `user_non_funding_ledger_updates()` for non-funding transfers and ledger events.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  flows = await info.user_non_funding_ledger_updates(
+async with Hyperliquid.http(public=True) as client:
+  flows = await client.info.user_non_funding_ledger_updates(
     user,
     start_ms,
     end_time=end_ms,

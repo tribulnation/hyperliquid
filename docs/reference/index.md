@@ -10,4 +10,5 @@ Use it when you need exact behavior, environment configuration, or generated end
 - [Error Handling](error-handling.md)
 - [Environment Variables](env-vars.md)
 - [Timestamps](timestamps.md)
+- [Coverage](coverage.md)
 - [API](api/index.md)

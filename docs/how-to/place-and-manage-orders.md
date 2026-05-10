@@ -1,6 +1,6 @@
 # Place & Manage Orders
 
-Use `Exchange` for signed trading actions and `Info` for read-side order queries.
+Use `client.exchange` for signed trading actions and `client.info` for read-side order queries.
 
 ```bash
 export HYPERLIQUID_PRIVATE_KEY="your_private_key"
@@ -8,13 +8,13 @@ export HYPERLIQUID_PRIVATE_KEY="your_private_key"
 
 ## Resolve The Asset Id
 
-`Exchange.order()` takes one or more order wire objects, and each order uses Hyperliquid asset ids rather than coin symbols. For perps on the default dex, the asset id is the index in `perp_meta()['universe']`.
+`client.exchange.order()` takes one or more order wire objects, and each order uses Hyperliquid asset ids rather than coin symbols. For perps on the default dex, the asset id is the index in `perp_meta()['universe']`.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  meta = await info.perp_meta()
+async with Hyperliquid.http(public=True) as client:
+  meta = await client.info.perp_meta()
   btc_asset = next(
     idx
     for idx, asset in enumerate(meta['universe'])
@@ -48,13 +48,13 @@ You can pass multiple orders to `order(...)` in one call when you need batch pla
 Use the account address plus either an order id or a client order id.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
 user = '0xYourAccountAddress'
 oid = 123456789
 
-async with Info.http() as info:
-  order = await info.order_status(user, oid)
+async with Hyperliquid.http(public=True) as client:
+  order = await client.info.order_status(user, oid)
   print(order)
 ```
 
@@ -63,12 +63,12 @@ async with Info.http() as info:
 `open_orders()` returns the compact wire shape. `frontend_open_orders()` includes extra fields such as trigger metadata. Both accept `dex=...` for non-default perp dexes.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
 user = '0xYourAccountAddress'
 
-async with Info.http() as info:
-  open_orders = await info.open_orders(user)
+async with Hyperliquid.http(public=True) as client:
+  open_orders = await client.info.open_orders(user)
   print(len(open_orders))
 ```
 

@@ -1,19 +1,38 @@
-<a href="https://app.hyperliquid.xyz/trade">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-light.svg">
-    <img alt="Hyperliquid" src="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-light.svg">
-  </picture>
-</a>
+<p align="center">
+  <a href="https://hyperliquid.tribulnation.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-light.svg">
+      <img alt="Typed Hyperliquid" src="https://raw.githubusercontent.com/tribulnation/hyperliquid/refs/heads/main/media/hyperliquid-light.svg" width="520">
+    </picture>
+  </a>
+</p>
+
+<p align="center">
+  <em>A fully typed, validated async client for the Hyperliquid API.</em>
+</p>
+
+<p align="center">
+  <a href="https://pypi.org/project/typed-hyperliquid/">
+    <img src="https://img.shields.io/pypi/v/typed-hyperliquid.svg" alt="PyPI version">
+  </a>
+  <a href="https://pypi.org/project/typed-hyperliquid/">
+    <img src="https://img.shields.io/pypi/pyversions/typed-hyperliquid.svg" alt="Python versions">
+  </a>
+  <a href="https://hyperliquid.tribulnation.com/">
+    <img src="https://img.shields.io/badge/docs-live-black" alt="Docs">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/pypi/l/typed-hyperliquid.svg" alt="License">
+  </a>
+</p>
 
 ---
 
-[![PyPI version](https://img.shields.io/pypi/v/typed-hyperliquid.svg)](https://pypi.org/project/typed-hyperliquid/)
-[![Python versions](https://img.shields.io/pypi/pyversions/typed-hyperliquid.svg)](https://pypi.org/project/typed-hyperliquid/)
-[![Docs](https://img.shields.io/badge/docs-live-black)](https://hyperliquid.tribulnation.com/)
-[![License](https://img.shields.io/pypi/l/typed-hyperliquid.svg)](LICENSE)
+- **Documentation**: [https://hyperliquid.tribulnation.com](https://hyperliquid.tribulnation.com)
+- **Source Code**: [https://github.com/tribulnation/hyperliquid](https://github.com/tribulnation/hyperliquid)
 
-> A fully typed, validated async client for the Hyperliquid API.
+---
 
 ```python
 from hyperliquid import Hyperliquid
@@ -39,39 +58,18 @@ async with Hyperliquid.ws(public=True) as client:
 pip install typed-hyperliquid
 ```
 
-For authenticated exchange actions, set a private key:
+## How To
 
-```bash
-export HYPERLIQUID_PRIVATE_KEY="your_private_key"
-```
+- [Place & Manage Orders](https://hyperliquid.tribulnation.com/how-to/place-and-manage-orders/)
+- [Fetch Market Data](https://hyperliquid.tribulnation.com/how-to/fetch-market-data/)
+- [Fetch Your Balances & Positions](https://hyperliquid.tribulnation.com/how-to/fetch-balances-and-positions/)
+- [Fetch Your Transactions](https://hyperliquid.tribulnation.com/how-to/fetch-transactions/)
+- [Listen To Your Trades](https://hyperliquid.tribulnation.com/how-to/listen-to-your-trades/)
+- [Listen To Public Data](https://hyperliquid.tribulnation.com/how-to/listen-to-public-data/)
 
-## Overview
+## Reference
 
-Typed Hyperliquid exposes the upstream API as three client surfaces:
-
-- `client.info`: public and account read methods like `all_mids`, `l2_book`,
-  `clearinghouse_state`, `user_fills`, and spot/perp metadata.
-- `client.exchange`: signed actions like placing orders, canceling orders,
-  transfers, withdrawals, staking, TWAPs, and leverage updates.
-- `client.streams`: WebSocket subscriptions like trades, books, candles,
-  user fills, user events, and open orders.
-
-Use `Hyperliquid.http()` or `Hyperliquid.ws()` depending on the transport you
-want for request-response methods:
-
-```python
-from hyperliquid import Hyperliquid
-
-async with Hyperliquid.http() as client:
-  mids = await client.info.all_mids()
-  result = await client.exchange.noop()
-```
-
-For testnet, pass `mainnet=False` and set `HYPERLIQUID_TESTNET_PRIVATE_KEY`.
-
-## Documentation
-
-- [**Read the docs**](https://hyperliquid.tribulnation.com)
-- [Getting Started](https://hyperliquid.tribulnation.com/getting-started/)
-- [API Overview](https://hyperliquid.tribulnation.com/api-overview/)
-- [API Keys / Wallet Setup](https://hyperliquid.tribulnation.com/api-keys/)
+- [Authenticated Setup](https://hyperliquid.tribulnation.com/authenticated-setup/)
+- [Error Handling](https://hyperliquid.tribulnation.com/reference/error-handling/)
+- [Environment Variables](https://hyperliquid.tribulnation.com/reference/env-vars/)
+- [Generated API Reference](https://hyperliquid.tribulnation.com/reference/api/)

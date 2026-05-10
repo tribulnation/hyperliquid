@@ -1,18 +1,18 @@
 # Listen To Your Trades
 
-Use `Streams` for subscription-style updates.
+Use `client.streams` for subscription-style updates.
 
 ## Listen To User Fills
 
 `user_fills()` streams fills for a user address. This is the most direct way to listen to your trades.
 
 ```python
-from hyperliquid import Streams
+from hyperliquid import Hyperliquid
 
 user = '0xYourAccountAddress'
 
-async with Streams.new() as streams:
-  fills = await streams.user_fills(user)
+async with Hyperliquid.ws(public=True) as client:
+  fills = await client.streams.user_fills(user)
   async for update in fills:
     for fill in update['fills']:
       print(fill['coin'], fill['side'], fill['px'], fill['sz'])
@@ -21,12 +21,12 @@ async with Streams.new() as streams:
 If you want partial fills aggregated within the same block, pass `aggregate_by_time=True`.
 
 ```python
-from hyperliquid import Streams
+from hyperliquid import Hyperliquid
 
 user = '0xYourAccountAddress'
 
-async with Streams.new() as streams:
-  fills = await streams.user_fills(user, aggregate_by_time=True)
+async with Hyperliquid.ws(public=True) as client:
+  fills = await client.streams.user_fills(user, aggregate_by_time=True)
   async for update in fills:
     print(update['fills'])
 ```

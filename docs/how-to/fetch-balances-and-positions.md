@@ -1,6 +1,6 @@
 # Fetch Your Balances & Positions
 
-Use `Info` for account-state reads. These methods take a user address, not a signing wallet.
+Use `client.info` for account-state reads. These methods take a user address, not a signing wallet.
 
 ```python
 user = '0xYourAccountAddress'
@@ -9,10 +9,10 @@ user = '0xYourAccountAddress'
 ## Fetch Spot Balances
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  spot = await info.spot_clearinghouse_state(user)
+async with Hyperliquid.http(public=True) as client:
+  spot = await client.info.spot_clearinghouse_state(user)
   for balance in spot['balances']:
     print(balance['coin'], balance['total'])
 ```
@@ -24,10 +24,10 @@ async with Info.http() as info:
 If you trade on a non-default perp dex, pass `dex=...`.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  state = await info.clearinghouse_state(user)
+async with Hyperliquid.http(public=True) as client:
+  state = await client.info.clearinghouse_state(user)
   print(state['marginSummary']['accountValue'])
 
   for asset_position in state['assetPositions']:
@@ -40,10 +40,10 @@ async with Info.http() as info:
 Use `user_portfolio()` for account-value and PnL history across the built-in periods.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  portfolio = await info.user_portfolio(user)
+async with Hyperliquid.http(public=True) as client:
+  portfolio = await client.info.user_portfolio(user)
   print(portfolio)
 ```
 
@@ -52,9 +52,9 @@ async with Info.http() as info:
 If the account uses subaccounts, `sub_accounts()` returns both perp and spot state for each one.
 
 ```python
-from hyperliquid import Info
+from hyperliquid import Hyperliquid
 
-async with Info.http() as info:
-  sub_accounts = await info.sub_accounts(user)
+async with Hyperliquid.http(public=True) as client:
+  sub_accounts = await client.info.sub_accounts(user)
   print([account['name'] for account in sub_accounts])
 ```
