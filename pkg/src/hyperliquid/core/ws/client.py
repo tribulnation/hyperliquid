@@ -1,10 +1,11 @@
 from typing_extensions import Any, Literal, Union, Annotated, Mapping, TypeAlias, TypeGuard
 from hyperliquid.core import TypedDict
 from dataclasses import dataclass, field
+from datetime import timedelta
+import asyncio
 import json
 import websockets
 from pydantic import TypeAdapter, Tag, Discriminator
-import asyncio
 
 from typed_core.ws.streams_rpc import StreamsRpc, Message
 from typed_core.exceptions import NetworkError, ApiError
@@ -53,6 +54,7 @@ class SubscriptionMessage(TypedDict):
   data: Any
 
 def msg_discriminator(msg) -> Literal['post', 'subscription', 'subscriptionResponse', 'error', 'pong']:
+  """Classify a raw server message for pydantic validation."""
   if isinstance(msg, Mapping):
     if msg.get('channel') == 'post':
       return 'post'
@@ -97,6 +99,8 @@ class Request(TypedDict):
 
 @dataclass
 class SocketClient(StreamsRpc[Request, PostResponse, Any, SubscriptionResponseData, SubscriptionResponseData]):
+  """Hyperliquid WebSocket transport for RPC and subscription messages."""
+  ping_interval: timedelta = field(kw_only=True, default=timedelta(seconds=30))
   serial_messages: asyncio.Queue[SubscriptionResponse|ErrorMessage] = field(default_factory=asyncio.Queue, init=False, repr=False)
 
   async def request_subscription(self, channel: str, params=None):

@@ -5,6 +5,7 @@ HYPERLIQUID_MAINNET = 'api.hyperliquid.xyz'
 HYPERLIQUID_TESTNET = 'api.hyperliquid-testnet.xyz'
 
 class timestamp:
+  """Helpers for Hyperliquid millisecond timestamps."""
   @staticmethod
   def parse(time: int | str) -> datetime:
     return datetime.fromtimestamp(int(time)/1e3)

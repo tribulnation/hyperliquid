@@ -6,9 +6,11 @@ from datetime import timedelta
 import pydantic
 from eth_account.account import Account
 from eth_account.signers.local import LocalAccount
+from typed_core.exceptions import ApiError
+from typed_core.http import HttpClient
 
 from hyperliquid.core import (
-  HttpClient, SocketClient, ApiError,
+  SocketClient,
   HYPERLIQUID_MAINNET, HYPERLIQUID_TESTNET,
 )
 
@@ -60,12 +62,12 @@ class ExchangeClient(ABC):
 
 @dataclass(kw_only=True)
 class ExchangeHttpClient(ExchangeClient):
-  domain: str
+  base_url: str
   http: HttpClient = field(default_factory=HttpClient)
 
   @property
   def url(self) -> str:
-    return f'https://{self.domain}/exchange'
+    return f'{self.base_url.rstrip("/")}/exchange'
 
   async def request(self, request: ExchangeRequest):
     r = await self.http.request('POST', self.url, json=request)
@@ -119,24 +121,60 @@ class ExchangeMixin:
   validate: bool = True
 
   @classmethod
-  def http(cls, wallet: Wallet, *, mainnet: bool = True, validate: bool = True, http: HttpClient | None = None):
+  def http(
+    cls, wallet: Wallet, *, mainnet: bool = True, validate: bool = True,
+    http: HttpClient | None = None, base_url: str | None = None,
+  ):
+    """Create an Exchange client with HTTP transport.
+
+    Args:
+      wallet: Private key or account object used to sign exchange actions.
+      mainnet: Use mainnet when true, testnet when false.
+      validate: Validate responses.
+      http: Shared HTTP transport.
+      base_url: Custom HTTP API root. If provided, takes
+        precedence over `mainnet`.
+    """
     wallet = _parse_wallet(wallet)
     domain = HYPERLIQUID_MAINNET if mainnet else HYPERLIQUID_TESTNET
+    base_url = base_url or f'https://{domain}'
     http = http or HttpClient()
-    client = ExchangeHttpClient(domain=domain, validate=validate, http=http)
+    client = ExchangeHttpClient(base_url=base_url, validate=validate, http=http)
     return cls(client=client, wallet=wallet, mainnet=mainnet, validate=validate)
 
 
   @classmethod
   def ws_of(cls, wallet: Wallet, *, ws: SocketClient, mainnet: bool = True, validate: bool = True):
+    """Create an Exchange client from an existing WebSocket transport.
+
+    Args:
+      wallet: Private key or account object used to sign exchange actions.
+      ws: Shared WebSocket transport.
+      mainnet: Use mainnet signing rules when true,
+        testnet signing rules when false.
+      validate: Validate responses.
+    """
     wallet = _parse_wallet(wallet)
     client = ExchangeSocketClient(ws=ws, validate=validate)
     return cls(client=client, wallet=wallet, mainnet=mainnet, validate=validate)
 
   @classmethod
-  def ws(cls, wallet: Wallet, *, mainnet: bool = True, validate: bool = True, timeout: timedelta = timedelta(seconds=10)):
+  def ws(
+    cls, wallet: Wallet, *, mainnet: bool = True, validate: bool = True,
+    timeout: timedelta = timedelta(seconds=10), ws_url: str | None = None,
+  ):
+    """Create an Exchange client with WebSocket transport.
+
+    Args:
+      wallet: Private key or account object used to sign exchange actions.
+      mainnet: Use mainnet when true, testnet when false.
+      validate: Validate responses.
+      timeout: WebSocket request timeout.
+      ws_url: Custom WebSocket URL. If provided, takes
+        precedence over `mainnet`.
+    """
     domain = HYPERLIQUID_MAINNET if mainnet else HYPERLIQUID_TESTNET
-    ws = SocketClient(url=f'wss://{domain}/ws', timeout=timeout)
+    ws = SocketClient(url=ws_url or f'wss://{domain}/ws', timeout=timeout)
     return cls.ws_of(wallet=wallet, ws=ws, mainnet=mainnet, validate=validate)
 
   async def __aenter__(self):
