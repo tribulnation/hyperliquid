@@ -37,8 +37,9 @@ class StreamsMixin:
     ws = SocketClient(url=ws_url or f'wss://{domain}/ws', timeout=timeout)
     return cls.of(ws, validate=validate)
 
-  async def subscribe(self, channel: str, params=None):
-    return await self.client.subscribe(channel, params)
+  async def subscribe(self, channel: str, params=None, *, request_channel: str | None = None):
+    """Subscribe to a stream, optionally separating request and message channels."""
+    return await self.client.subscribe(channel, params, request_channel=request_channel)
 
   async def __aenter__(self):
     await self.client.__aenter__()

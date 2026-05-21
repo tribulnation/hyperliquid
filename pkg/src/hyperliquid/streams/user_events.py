@@ -4,6 +4,9 @@ import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
 
+FillSide = Literal['A', 'B']
+FillDir = Literal['Buy', 'Sell', 'Open Long', 'Close Long', 'Open Short', 'Close Short']
+
 class FillLiquidation(TypedDict):
   liquidatedUser: NotRequired[str]
   markPx: float
@@ -13,10 +16,10 @@ class WsFill(TypedDict):
   coin: str
   px: str
   sz: str
-  side: str
+  side: FillSide
   time: int
   startPosition: str
-  dir: str
+  dir: FillDir
   closedPnl: str
   hash: str
   oid: int
@@ -26,6 +29,7 @@ class WsFill(TypedDict):
   liquidation: NotRequired[FillLiquidation]
   feeToken: str
   builderFee: NotRequired[str]
+  twapId: NotRequired[int | None]
 
 class WsUserFunding(TypedDict):
   time: int
@@ -74,7 +78,7 @@ class UserEvents(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
-    stream = await self.subscribe('userEvents', {'user': user})
+    stream = await self.subscribe('user', {'user': user}, request_channel='userEvents')
     def mapper(msg) -> WsUserEvent:
       return adapter.validate_python(msg) if self.validate else msg
     return stream.map(mapper)

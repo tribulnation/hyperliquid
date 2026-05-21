@@ -37,6 +37,13 @@ Subscription client.
       show_root_heading: false
       show_root_toc_entry: false
 
+## `all_dexs_asset_ctxs`
+
+::: hyperliquid.streams.all_dexs_asset_ctxs.AllDexsAssetCtxs.all_dexs_asset_ctxs
+    options:
+      show_root_heading: false
+      show_root_toc_entry: false
+
 ## `bbo`
 
 ::: hyperliquid.streams.bbo.Bbo.bbo

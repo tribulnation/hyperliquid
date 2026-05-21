@@ -1,4 +1,4 @@
-from typing_extensions import NotRequired
+from typing_extensions import Literal, NotRequired
 from hyperliquid.core import TypedDict
 import pydantic
 
@@ -6,17 +6,17 @@ from hyperliquid.streams.core import StreamsMixin
 
 class WsBasicOrder(TypedDict):
   coin: str
-  side: str
+  side: Literal['A', 'B']
   limitPx: str
   sz: str
   oid: int
   timestamp: int
   origSz: str
-  cloid: NotRequired[str]
+  cloid: NotRequired[str | None]
 
 class WsOrder(TypedDict):
   order: WsBasicOrder
-  status: str
+  status: Literal['open', 'filled', 'canceled', 'triggered', 'rejected', 'marginCanceled']
   statusTimestamp: int
 
 OrderUpdatesData = list[WsOrder]

@@ -7,7 +7,7 @@ from hyperliquid.streams.core import StreamsMixin
 class TwapState(TypedDict):
   coin: str
   user: str
-  side: str
+  side: Literal['A', 'B']
   sz: float
   executedSz: float
   executedNtl: float

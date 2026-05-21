@@ -4,6 +4,9 @@ import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
 
+FillSide = Literal['A', 'B']
+FillDir = Literal['Buy', 'Sell', 'Open Long', 'Close Long', 'Open Short', 'Close Short']
+
 class FillLiquidation(TypedDict):
   liquidatedUser: NotRequired[str]
   markPx: float
@@ -13,10 +16,10 @@ class WsFill(TypedDict):
   coin: str
   px: str
   sz: str
-  side: Literal['Buy', 'Sell']
+  side: FillSide
   time: int
   startPosition: str
-  dir: str
+  dir: FillDir
   closedPnl: str
   hash: str
   oid: int
@@ -26,6 +29,7 @@ class WsFill(TypedDict):
   liquidation: NotRequired[FillLiquidation]
   feeToken: str
   builderFee: NotRequired[str]
+  twapId: NotRequired[int | None]
 
 class WsUserFills(TypedDict):
   isSnapshot: NotRequired[bool]

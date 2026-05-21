@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "typed-hyperliquid"
-version = "1.1.0"
+version = "1.1.4"
 authors = [
   {name="Marcel Claramunt", email="marcel@tribulnation.com"}
 ]
@@ -18,7 +18,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "typed-core",
+  "typed-core>=0.1.9",
   "eth-account",
   "msgpack"
 ]
@@ -29,3 +29,6 @@ readme = {file="README.md", content-type="text/markdown"}
 Repository = "https://github.com/tribulnation/hyperliquid.git"
 Documentation = "https://hyperliquid.tribulnation.com"
 Website = "https://tribulnation.com"
+
+[tool.setuptools.package-data]
+hyperliquid = ["py.typed"]
