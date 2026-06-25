@@ -2,27 +2,6 @@
 
 Read-only request-response client.
 
-## `http`
-
-::: hyperliquid.info.core.InfoMixin.http
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
-## `ws_of`
-
-::: hyperliquid.info.core.InfoMixin.ws_of
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
-## `ws`
-
-::: hyperliquid.info.core.InfoMixin.ws
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
 ## `active_asset_data`
 
 ::: hyperliquid.info.perps.active_asset_data.ActiveAssetData.active_asset_data

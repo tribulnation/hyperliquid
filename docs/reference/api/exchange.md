@@ -2,27 +2,6 @@
 
 Signed exchange-action client.
 
-## `http`
-
-::: hyperliquid.exchange.core.mixin.ExchangeMixin.http
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
-## `ws_of`
-
-::: hyperliquid.exchange.core.mixin.ExchangeMixin.ws_of
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
-## `ws`
-
-::: hyperliquid.exchange.core.mixin.ExchangeMixin.ws
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
 ## `agent_enable_dex_abstraction`
 
 ::: hyperliquid.exchange.agent_enable_dex_abstraction.AgentEnableDexAbstraction.agent_enable_dex_abstraction

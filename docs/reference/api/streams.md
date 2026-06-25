@@ -2,20 +2,6 @@
 
 Subscription client.
 
-## `of`
-
-::: hyperliquid.streams.core.StreamsMixin.of
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
-## `new`
-
-::: hyperliquid.streams.core.StreamsMixin.new
-    options:
-      show_root_heading: false
-      show_root_toc_entry: false
-
 ## `active_asset_ctx`
 
 ::: hyperliquid.streams.active_asset_ctx.ActiveAssetCtx.active_asset_ctx
