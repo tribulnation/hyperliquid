@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "typed-hyperliquid"
-version = "1.1.6"
+version = "1.1.7"
 authors = [
   {name="Marcel Claramunt", email="marcel@tribulnation.com"}
 ]
 description = "A fully typed, validated async client for the Hyperliquid API."
-license = "GPL-3.0-only"
+license = "MIT"
 license-files = ["LICENSE"]
 classifiers = [
   "Programming Language :: Python :: 3",
