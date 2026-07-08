@@ -28,8 +28,13 @@ class Bbo(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
-    stream = await self.subscribe('bbo', {'coin': coin})
     coin_l = coin.lower()
+    # See `l2_book.py` -- `bbo` messages are tagged the same way regardless
+    # of coin, so use a coin-specific local channel key.
+    stream = await self.subscribe(
+      f'bbo:{coin_l}', {'coin': coin}, request_channel='bbo',
+      message_key=lambda data: f'bbo:{data["coin"].lower()}',
+    )
     stream = stream.filter(lambda msg: msg.get('coin', '').lower() == coin_l)
     def mapper(msg) -> BboData:
       return adapter.validate_python(msg) if self.validate else msg

@@ -31,8 +31,17 @@ class Trades(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
-    stream = await self.subscribe('trades', {'coin': coin})
     coin_l = coin.lower()
+    # See `l2_book.py` -- `trades` messages are tagged the same way
+    # regardless of coin, so use a coin-specific local channel key. Trade
+    # notifications are a list, so pull the coin from the first element.
+    def message_key(data) -> str:
+      first = data[0] if data else None
+      trade_coin = first.get('coin') if isinstance(first, dict) else None
+      return f'trades:{trade_coin.lower()}' if trade_coin is not None else 'trades'
+    stream = await self.subscribe(
+      f'trades:{coin_l}', {'coin': coin}, request_channel='trades', message_key=message_key,
+    )
     def match(msg):
       if not msg:
         return False

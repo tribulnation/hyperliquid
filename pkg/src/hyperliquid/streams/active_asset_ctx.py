@@ -48,8 +48,13 @@ class ActiveAssetCtx(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
-    stream = await self.subscribe('activeAssetCtx', {'coin': coin})
     coin_l = coin.lower()
+    # See `l2_book.py` -- `activeAssetCtx` messages are tagged the same way
+    # regardless of coin, so use a coin-specific local channel key.
+    stream = await self.subscribe(
+      f'activeAssetCtx:{coin_l}', {'coin': coin}, request_channel='activeAssetCtx',
+      message_key=lambda data: f'activeAssetCtx:{data["coin"].lower()}',
+    )
     stream = stream.filter(lambda msg: msg.get('coin', '').lower() == coin_l)
     def mapper(msg) -> ActiveAssetCtxData:
       return adapter.validate_python(msg) if self.validate else msg

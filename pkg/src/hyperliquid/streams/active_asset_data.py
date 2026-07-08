@@ -40,9 +40,14 @@ class ActiveAssetData(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
-    stream = await self.subscribe('activeAssetData', {'user': user, 'coin': coin})
     user_l = user.lower()
     coin_l = coin.lower()
+    # See `l2_book.py` -- `activeAssetData` messages are tagged the same way
+    # regardless of user/coin, so use a user+coin-specific local channel key.
+    stream = await self.subscribe(
+      f'activeAssetData:{user_l}:{coin_l}', {'user': user, 'coin': coin}, request_channel='activeAssetData',
+      message_key=lambda data: f'activeAssetData:{data["user"].lower()}:{data["coin"].lower()}',
+    )
     def match(msg):
       return msg.get('user', '').lower() == user_l and msg.get('coin', '').lower() == coin_l
     stream = stream.filter(match)

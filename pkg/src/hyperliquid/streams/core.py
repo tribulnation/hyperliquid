@@ -1,3 +1,4 @@
+from typing_extensions import Any, Callable
 from dataclasses import dataclass
 from datetime import timedelta
 from hyperliquid.core import HYPERLIQUID_MAINNET, HYPERLIQUID_TESTNET
@@ -37,9 +38,21 @@ class StreamsMixin:
     ws = SocketClient(url=ws_url or f'wss://{domain}/ws', timeout=timeout)
     return cls.of(ws, validate=validate)
 
-  async def subscribe(self, channel: str, params=None, *, request_channel: str | None = None):
-    """Subscribe to a stream, optionally separating request and message channels."""
-    return await self.client.subscribe(channel, params, request_channel=request_channel)
+  async def subscribe(
+    self, channel: str, params=None, *,
+    request_channel: str | None = None,
+    message_key: Callable[[Any], str] | None = None,
+  ):
+    """Subscribe to a stream, optionally separating request and message channels.
+
+    `message_key`: for channels shared across multiple concurrent
+    subscriptions (e.g. `l2Book`, tagged identically for every coin), a
+    function deriving the local subscription key from an incoming
+    notification. See `StreamsRpc.subscribe`.
+    """
+    return await self.client.subscribe(
+      channel, params, request_channel=request_channel, message_key=message_key,
+    )
 
   async def __aenter__(self):
     await self.client.__aenter__()

@@ -102,30 +102,38 @@ class SocketClient(StreamsRpc[Request, PostResponse, Any, SubscriptionResponseDa
   """Hyperliquid WebSocket transport for RPC and subscription messages."""
   ping_interval: timedelta = field(kw_only=True, default=timedelta(seconds=30))
   serial_messages: asyncio.Queue[SubscriptionResponse|ErrorMessage] = field(default_factory=asyncio.Queue, init=False, repr=False)
+  # `serial_messages` is a single shared reply channel with no per-request
+  # correlation id, unlike `rpc_request` (id-keyed) or notifications (keyed
+  # by channel). Two concurrent subscribe/unsubscribe calls racing on it can
+  # steal each other's reply. Serialize send+reply pairs so each call only
+  # ever consumes its own response.
+  serial_lock: asyncio.Lock = field(default_factory=asyncio.Lock, init=False, repr=False)
 
   async def request_subscription(self, channel: str, params=None):
-    await self.send({
-      'method': 'subscribe',
-      'subscription': {
-        'type': channel,
-        **(params or {}),
-      },
-    })
-    msg = await self.serial_messages.get()
+    async with self.serial_lock:
+      await self.send({
+        'method': 'subscribe',
+        'subscription': {
+          'type': channel,
+          **(params or {}),
+        },
+      })
+      msg = await self.serial_messages.get()
     if is_subscription_response(msg):
       return msg['data']
     else:
       raise ApiError(msg['data'])
 
   async def request_unsubscription(self, channel: str, params=None):
-    await self.send({
-      'method': 'unsubscribe',
-      'subscription': {
-        'type': channel,
-        **(params or {}),
-      }
-    })
-    msg = await self.serial_messages.get()
+    async with self.serial_lock:
+      await self.send({
+        'method': 'unsubscribe',
+        'subscription': {
+          'type': channel,
+          **(params or {}),
+        }
+      })
+      msg = await self.serial_messages.get()
     if is_subscription_response(msg):
       return msg['data']
     else:

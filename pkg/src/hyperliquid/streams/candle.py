@@ -32,9 +32,15 @@ class Candle(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
-    stream = await self.subscribe('candle', {'coin': coin, 'interval': interval})
     coin_l = coin.lower()
     interval_l = interval.lower()
+    # See `l2_book.py` -- `candle` messages are tagged the same way
+    # regardless of coin/interval, so use a coin+interval-specific local
+    # channel key.
+    stream = await self.subscribe(
+      f'candle:{coin_l}:{interval_l}', {'coin': coin, 'interval': interval}, request_channel='candle',
+      message_key=lambda data: f'candle:{data["s"].lower()}:{data["i"].lower()}',
+    )
     def match(msg):
       return msg.get('s', '').lower() == coin_l and msg.get('i', '').lower() == interval_l
     stream = stream.filter(match)

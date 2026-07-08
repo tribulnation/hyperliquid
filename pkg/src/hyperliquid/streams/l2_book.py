@@ -42,7 +42,16 @@ class L2Book(StreamsMixin):
       params['nSigFigs'] = n_sig_figs
     if mantissa is not None:
       params['mantissa'] = mantissa
-    stream = await self.subscribe('l2Book', params)
+    # `l2Book` is shared across all coins at the wire level (Hyperliquid
+    # tags every message with the same "channel": "l2Book" regardless of
+    # coin) -- use a coin-specific local channel key so concurrent
+    # subscriptions for different coins don't collide in the local
+    # subscription registry, and derive the same key from incoming
+    # notifications so they route back to the right one.
+    stream = await self.subscribe(
+      f'l2Book:{coin.lower()}', params, request_channel='l2Book',
+      message_key=lambda data: f'l2Book:{data["coin"].lower()}',
+    )
     def mapper(msg) -> L2BookData:
       return adapter.validate_python(msg) if self.validate else msg
     return stream.map(mapper)
