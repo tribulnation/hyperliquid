@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class MarginSummary(TypedDict):
   accountValue: float
@@ -28,7 +29,7 @@ class ClearinghouseStateParams(TypedDict):
 adapter = pydantic.TypeAdapter(ClearinghouseStateData)
 
 class ClearinghouseState(StreamsMixin):
-  async def clearinghouse_state(self, user: str, dex: str):
+  def clearinghouse_state(self, user: str, dex: str):
     """Stream clearinghouse state for a user.
 
     Args:
@@ -38,6 +39,9 @@ class ClearinghouseState(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._clearinghouse_state_impl(user, dex))
+
+  async def _clearinghouse_state_impl(self, user: str, dex: str):
     stream = await self.subscribe('clearinghouseState', {'user': user, 'dex': dex})
     def mapper(msg) -> ClearinghouseStateData:
       data = msg.get('clearinghouseState', msg)

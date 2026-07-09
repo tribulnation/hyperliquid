@@ -2,6 +2,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class CandleData(TypedDict):
   t: int
@@ -22,7 +23,7 @@ class CandleParams(TypedDict):
 adapter = pydantic.TypeAdapter(CandleData)
 
 class Candle(StreamsMixin):
-  async def candle(self, coin: str, interval: str):
+  def candle(self, coin: str, interval: str):
     """Stream candle updates for a coin.
 
     Args:
@@ -32,6 +33,9 @@ class Candle(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._candle_impl(coin, interval))
+
+  async def _candle_impl(self, coin: str, interval: str):
     coin_l = coin.lower()
     interval_l = interval.lower()
     # See `l2_book.py` -- `candle` messages are tagged the same way

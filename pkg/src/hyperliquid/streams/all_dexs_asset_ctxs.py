@@ -2,6 +2,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class AllDexsAssetCtx(TypedDict):
   funding: str
@@ -34,7 +35,7 @@ AllDexsAssetCtxsData = list[AllDexsAssetCtxGroup] | AllDexsAssetCtxTupleData
 adapter = pydantic.TypeAdapter(AllDexsAssetCtxsData)
 
 class AllDexsAssetCtxs(StreamsMixin):
-  async def all_dexs_asset_ctxs(self, *, validate: bool | None = None):
+  def all_dexs_asset_ctxs(self, *, validate: bool | None = None):
     """Stream asset contexts for all perp dexs.
 
     Args:
@@ -44,6 +45,9 @@ class AllDexsAssetCtxs(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions#subscriptions)
     """
+    return StreamManager(lambda: self._all_dexs_asset_ctxs_impl(validate=validate))
+
+  async def _all_dexs_asset_ctxs_impl(self, *, validate: bool | None = None):
     should_validate = self.validate if validate is None else validate
     stream = await self.subscribe('allDexsAssetCtxs')
     def mapper(msg) -> AllDexsAssetCtxsData:

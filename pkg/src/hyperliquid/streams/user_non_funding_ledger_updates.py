@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class LiquidatedPosition(TypedDict):
   coin: str
@@ -113,7 +114,7 @@ class UserNonFundingLedgerUpdatesParams(TypedDict):
 adapter = pydantic.TypeAdapter(WsUserNonFundingLedgerUpdates)
 
 class UserNonFundingLedgerUpdates(StreamsMixin):
-  async def user_non_funding_ledger_updates(self, user: str):
+  def user_non_funding_ledger_updates(self, user: str):
     """Stream non-funding ledger updates.
 
     Args:
@@ -122,6 +123,9 @@ class UserNonFundingLedgerUpdates(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._user_non_funding_ledger_updates_impl(user))
+
+  async def _user_non_funding_ledger_updates_impl(self, user: str):
     stream = await self.subscribe('userNonFundingLedgerUpdates', {'user': user})
     user_l = user.lower()
     def match(msg):

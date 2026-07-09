@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class L2BookLevel(TypedDict):
   px: str
@@ -22,7 +23,7 @@ class L2BookParams(TypedDict):
 adapter = pydantic.TypeAdapter(L2BookData)
 
 class L2Book(StreamsMixin):
-  async def l2_book(
+  def l2_book(
     self, coin: str, *,
     n_sig_figs: int | None = None,
     mantissa: int | None = None
@@ -37,6 +38,13 @@ class L2Book(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions#subscription-messages)
     """
+    return StreamManager(lambda: self._l2_book_impl(coin, n_sig_figs=n_sig_figs, mantissa=mantissa))
+
+  async def _l2_book_impl(
+    self, coin: str, *,
+    n_sig_figs: int | None = None,
+    mantissa: int | None = None
+  ):
     params: L2BookParams = {'coin': coin}
     if n_sig_figs is not None:
       params['nSigFigs'] = n_sig_figs

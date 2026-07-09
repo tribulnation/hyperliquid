@@ -2,6 +2,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class L2BookLevel(TypedDict):
   px: str
@@ -19,7 +20,7 @@ class BboParams(TypedDict):
 adapter = pydantic.TypeAdapter(BboData)
 
 class Bbo(StreamsMixin):
-  async def bbo(self, coin: str):
+  def bbo(self, coin: str):
     """Stream best-bid-offer updates.
 
     Args:
@@ -28,6 +29,9 @@ class Bbo(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._bbo_impl(coin))
+
+  async def _bbo_impl(self, coin: str):
     coin_l = coin.lower()
     # See `l2_book.py` -- `bbo` messages are tagged the same way regardless
     # of coin, so use a coin-specific local channel key.

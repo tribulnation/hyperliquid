@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class CrossLeverage(TypedDict):
   type: Literal['cross']
@@ -30,7 +31,7 @@ class ActiveAssetDataParams(TypedDict):
 adapter = pydantic.TypeAdapter(ActiveAssetDataData)
 
 class ActiveAssetData(StreamsMixin):
-  async def active_asset_data(self, user: str, coin: str):
+  def active_asset_data(self, user: str, coin: str):
     """Stream active asset data for a user.
 
     Args:
@@ -40,6 +41,9 @@ class ActiveAssetData(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._active_asset_data_impl(user, coin))
+
+  async def _active_asset_data_impl(self, user: str, coin: str):
     user_l = user.lower()
     coin_l = coin.lower()
     # See `l2_book.py` -- `activeAssetData` messages are tagged the same way

@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class TwapState(TypedDict):
   coin: str
@@ -36,7 +37,7 @@ class UserTwapHistoryParams(TypedDict):
 adapter = pydantic.TypeAdapter(WsUserTwapHistory)
 
 class UserTwapHistory(StreamsMixin):
-  async def user_twap_history(self, user: str):
+  def user_twap_history(self, user: str):
     """Stream TWAP history for a user.
 
     Args:
@@ -45,6 +46,9 @@ class UserTwapHistory(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._user_twap_history_impl(user))
+
+  async def _user_twap_history_impl(self, user: str):
     stream = await self.subscribe('userTwapHistory', {'user': user})
     user_l = user.lower()
     stream = stream.filter(lambda msg: msg.get('user', '').lower() == user_l)

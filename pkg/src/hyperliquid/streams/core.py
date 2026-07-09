@@ -38,7 +38,7 @@ class StreamsMixin:
     ws = SocketClient(url=ws_url or f'wss://{domain}/ws', timeout=timeout)
     return cls.of(ws, validate=validate)
 
-  async def subscribe(
+  def subscribe(
     self, channel: str, params=None, *,
     request_channel: str | None = None,
     message_key: Callable[[Any], str] | None = None,
@@ -50,7 +50,7 @@ class StreamsMixin:
     function deriving the local subscription key from an incoming
     notification. See `StreamsRpc.subscribe`.
     """
-    return await self.client.subscribe(
+    return self.client.subscribe(
       channel, params, request_channel=request_channel, message_key=message_key,
     )
 

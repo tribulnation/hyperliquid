@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 FillSide = Literal['A', 'B']
 FillDir = Literal['Buy', 'Sell', 'Open Long', 'Close Long', 'Open Short', 'Close Short']
@@ -45,7 +46,7 @@ class UserTwapSliceFillsParams(TypedDict):
 adapter = pydantic.TypeAdapter(WsUserTwapSliceFills)
 
 class UserTwapSliceFills(StreamsMixin):
-  async def user_twap_slice_fills(self, user: str):
+  def user_twap_slice_fills(self, user: str):
     """Stream TWAP slice fills for a user.
 
     Args:
@@ -54,6 +55,9 @@ class UserTwapSliceFills(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._user_twap_slice_fills_impl(user))
+
+  async def _user_twap_slice_fills_impl(self, user: str):
     stream = await self.subscribe('userTwapSliceFills', {'user': user})
     user_l = user.lower()
     stream = stream.filter(lambda msg: msg.get('user', '').lower() == user_l)

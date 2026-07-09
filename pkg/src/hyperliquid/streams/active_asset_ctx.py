@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class PerpAssetCtx(TypedDict):
   funding: str
@@ -39,7 +40,7 @@ class ActiveAssetCtxParams(TypedDict):
 adapter = pydantic.TypeAdapter(ActiveAssetCtxData)
 
 class ActiveAssetCtx(StreamsMixin):
-  async def active_asset_ctx(self, coin: str):
+  def active_asset_ctx(self, coin: str):
     """Stream active asset context.
 
     Args:
@@ -48,6 +49,9 @@ class ActiveAssetCtx(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._active_asset_ctx_impl(coin))
+
+  async def _active_asset_ctx_impl(self, coin: str):
     coin_l = coin.lower()
     # See `l2_book.py` -- `activeAssetCtx` messages are tagged the same way
     # regardless of coin, so use a coin-specific local channel key.

@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class WebData3UserState(TypedDict):
   agentAddress: str | None
@@ -33,7 +34,7 @@ class WebData3Params(TypedDict):
 adapter = pydantic.TypeAdapter(WebData3Data)
 
 class WebData3(StreamsMixin):
-  async def web_data3(self, user: str):
+  def web_data3(self, user: str):
     """Stream WebData3 updates for a user.
 
     Args:
@@ -42,6 +43,9 @@ class WebData3(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._web_data3_impl(user))
+
+  async def _web_data3_impl(self, user: str):
     stream = await self.subscribe('webData3', {'user': user})
     user_l = user.lower()
     def match(msg):

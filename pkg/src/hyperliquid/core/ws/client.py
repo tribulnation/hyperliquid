@@ -4,11 +4,14 @@ from dataclasses import dataclass, field
 from datetime import timedelta
 import asyncio
 import json
+import logging
 import websockets
 from pydantic import TypeAdapter, Tag, Discriminator
 
 from typed_core.ws.streams_rpc import StreamsRpc, Message
 from typed_core.exceptions import NetworkError, ApiError
+
+log = logging.getLogger(__name__)
 
 class PostInfoPayload(TypedDict):
   type: str
@@ -101,39 +104,35 @@ class Request(TypedDict):
 class SocketClient(StreamsRpc[Request, PostResponse, Any, SubscriptionResponseData, SubscriptionResponseData]):
   """Hyperliquid WebSocket transport for RPC and subscription messages."""
   ping_interval: timedelta = field(kw_only=True, default=timedelta(seconds=30))
-  serial_messages: asyncio.Queue[SubscriptionResponse|ErrorMessage] = field(default_factory=asyncio.Queue, init=False, repr=False)
-  # `serial_messages` is a single shared reply channel with no per-request
-  # correlation id, unlike `rpc_request` (id-keyed) or notifications (keyed
-  # by channel). Two concurrent subscribe/unsubscribe calls racing on it can
-  # steal each other's reply. Serialize send+reply pairs so each call only
-  # ever consumes its own response.
+  serial_reply: asyncio.Future[SubscriptionResponse | ErrorMessage] | None = field(default=None, init=False, repr=False)
   serial_lock: asyncio.Lock = field(default_factory=asyncio.Lock, init=False, repr=False)
 
   async def request_subscription(self, channel: str, params=None):
-    async with self.serial_lock:
-      await self.send({
-        'method': 'subscribe',
-        'subscription': {
-          'type': channel,
-          **(params or {}),
-        },
-      })
-      msg = await self.serial_messages.get()
-    if is_subscription_response(msg):
-      return msg['data']
-    else:
-      raise ApiError(msg['data'])
+    return await self._subscription_request({
+      'method': 'subscribe',
+      'subscription': {
+        'type': channel,
+        **(params or {}),
+      },
+    })
 
   async def request_unsubscription(self, channel: str, params=None):
+    return await self._subscription_request({
+      'method': 'unsubscribe',
+      'subscription': {
+        'type': channel,
+        **(params or {}),
+      },
+    })
+
+  async def _subscription_request(self, payload: dict):
     async with self.serial_lock:
-      await self.send({
-        'method': 'unsubscribe',
-        'subscription': {
-          'type': channel,
-          **(params or {}),
-        }
-      })
-      msg = await self.serial_messages.get()
+      self.serial_reply = asyncio.get_running_loop().create_future()
+      try:
+        await self.send(payload)
+        msg = await self.serial_reply
+      finally:
+        self.serial_reply = None
     if is_subscription_response(msg):
       return msg['data']
     else:
@@ -167,7 +166,10 @@ class SocketClient(StreamsRpc[Request, PostResponse, Any, SubscriptionResponseDa
         'response': obj['data']['response'],
       }
     elif is_subscription_response(obj) or is_error_msg(obj):
-      self.serial_messages.put_nowait(obj)
+      if self.serial_reply is not None and not self.serial_reply.done():
+        self.serial_reply.set_result(obj)
+      else:
+        log.warning('Received subscription reply with no matching request in flight: %s', obj)
     elif is_subscription_msg(obj):
       return {
         'kind': 'subscription',

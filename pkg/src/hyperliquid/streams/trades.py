@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 class WsTrade(TypedDict):
   coin: str
@@ -22,7 +23,7 @@ class TradesParams(TypedDict):
 adapter = pydantic.TypeAdapter(TradesData)
 
 class Trades(StreamsMixin):
-  async def trades(self, coin: str):
+  def trades(self, coin: str):
     """Stream trades for a coin.
 
     Args:
@@ -31,6 +32,9 @@ class Trades(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/websocket#subscriptions)
     """
+    return StreamManager(lambda: self._trades_impl(coin))
+
+  async def _trades_impl(self, coin: str):
     coin_l = coin.lower()
     # See `l2_book.py` -- `trades` messages are tagged the same way
     # regardless of coin, so use a coin-specific local channel key. Trade

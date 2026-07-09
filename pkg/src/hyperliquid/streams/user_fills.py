@@ -3,6 +3,7 @@ from hyperliquid.core import TypedDict
 import pydantic
 
 from hyperliquid.streams.core import StreamsMixin
+from typed_core.util import StreamManager
 
 FillSide = Literal['A', 'B']
 
@@ -42,7 +43,7 @@ class UserFillsParams(TypedDict):
 adapter = pydantic.TypeAdapter(WsUserFills)
 
 class UserFills(StreamsMixin):
-  async def user_fills(self, user: str, *, aggregate_by_time: bool | None = None):
+  def user_fills(self, user: str, *, aggregate_by_time: bool | None = None):
     """Stream user fills.
 
     Args:
@@ -52,6 +53,9 @@ class UserFills(StreamsMixin):
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/websocket/subscriptions)
     """
+    return StreamManager(lambda: self._user_fills_impl(user, aggregate_by_time=aggregate_by_time))
+
+  async def _user_fills_impl(self, user: str, *, aggregate_by_time: bool | None = None):
     params: UserFillsParams = {'user': user}
     if aggregate_by_time is not None:
       params['aggregateByTime'] = aggregate_by_time
