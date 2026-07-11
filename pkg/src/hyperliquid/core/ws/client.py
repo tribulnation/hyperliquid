@@ -96,6 +96,9 @@ def is_error_msg(msg: ServerMessage) -> TypeGuard[ErrorMessage]:
 def is_pong_msg(msg: ServerMessage) -> TypeGuard[PongMessage]:
   return msg['channel'] == 'pong'
 
+def _is_already_subscribed(data: Any) -> bool:
+  return isinstance(data, str) and data.startswith('Already subscribed')
+
 class Request(TypedDict):
   type: Literal['info', 'action']
   payload: Any
@@ -135,6 +138,15 @@ class SocketClient(StreamsRpc[Request, PostResponse, Any, SubscriptionResponseDa
         self.serial_reply = None
     if is_subscription_response(msg):
       return msg['data']
+    elif payload['method'] == 'subscribe' and _is_already_subscribed(msg['data']):
+      # The ack for an earlier `subscribe` can be lost if the connection
+      # drops between `send()` returning and the reply arriving (we then
+      # see it as a `NetworkError` and retry) even though the server did
+      # register it. The retry lands here instead: the server is telling
+      # us we already have what we asked for, so treat it as success
+      # rather than looping on an error that will never clear itself.
+      reply: SubscriptionResponseData = {'method': 'subscribe', 'subscription': payload['subscription']}
+      return reply
     else:
       raise ApiError(msg['data'])
 
