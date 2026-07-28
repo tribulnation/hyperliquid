@@ -51,6 +51,9 @@ class UserFunding(InfoMixin):
   ) -> AsyncIterable[list[UserFundingEntry]]:
     """Return a user's funding history, automatically paginating the results.
 
+    A single call to `user_funding` returns at most 500 entries, so prefer this
+    whenever the requested range may hold more.
+
     Args:
       user: Account address.
       start_time: Start time in milliseconds, inclusive.
@@ -61,4 +64,4 @@ class UserFunding(InfoMixin):
       if not fundings:
         break
       yield fundings
-      start_time = fundings[-1]['time'] + 1
+      start_time = max(entry['time'] for entry in fundings) + 1

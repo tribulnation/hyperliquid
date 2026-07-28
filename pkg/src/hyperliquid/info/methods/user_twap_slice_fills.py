@@ -34,10 +34,15 @@ class TwapFill(TypedDict):
   """Fee token."""
   tid: int
   """Trade id."""
+  twapId: int | None
+  """TWAP id carried on the fill itself. Always null in practice; use the id on the
+  enclosing `TwapSliceFill` instead."""
 
 class TwapSliceFill(TypedDict):
   fill: TwapFill
+  """The underlying fill."""
   twapId: int
+  """Id of the TWAP order this slice belongs to."""
 
 UserTwapSliceFillsResponse = list[TwapSliceFill]
 

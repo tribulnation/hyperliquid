@@ -72,6 +72,9 @@ class UserFillsByTime(InfoMixin):
   ) -> AsyncIterable[list[UserFill]]:
     """Return a user's fills within a time range, automatically paginating the results.
 
+    A single call to `user_fills_by_time` returns at most 2000 fills, so prefer this
+    whenever the requested range may hold more.
+
     Args:
       user: Account address.
       start_time: Start time in milliseconds, inclusive.
@@ -86,4 +89,4 @@ class UserFillsByTime(InfoMixin):
       if not fills:
         break
       yield fills
-      start_time = fills[-1]['time'] + 1
+      start_time = max(entry['time'] for entry in fills) + 1

@@ -41,6 +41,9 @@ class FundingHistory(InfoMixin):
   ) -> AsyncIterable[list[FundingHistoryEntry]]:
     """Return historical funding rates, automatically paginating the results.
 
+    A single call to `funding_history` returns at most 500 entries, so prefer this
+    whenever the requested range may hold more.
+
     Args:
       coin: Coin, e.g. "ETH".
       start_time: Start time in milliseconds, inclusive.
@@ -54,4 +57,4 @@ class FundingHistory(InfoMixin):
       if not fundings:
         break
       yield fundings
-      start_time = fundings[-1]['time'] + 1
+      start_time = max(entry['time'] for entry in fundings) + 1
