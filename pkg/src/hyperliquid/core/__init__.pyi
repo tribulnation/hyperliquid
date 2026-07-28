@@ -1,7 +1,7 @@
 from .ws import SocketClient
 from .util import HYPERLIQUID_MAINNET, HYPERLIQUID_TESTNET, timestamp
 from .validation import TypedDict
-from .exc import Error, ApiError, AuthError, NetworkError, RateLimited, ValidationError, LogicError
+from .exc import Error, ApiError, AuthError, NetworkError, RateLimited, ValidationError, LogicError, PaginationError
 
 __all__ = [
   'SocketClient',
@@ -16,4 +16,5 @@ __all__ = [
   'RateLimited',
   'ValidationError',
   'LogicError',
+  'PaginationError',
 ]

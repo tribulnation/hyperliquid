@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: typed-hyperliquid
-Version: 1.2.1
+Version: 1.2.3
 Summary: A fully typed, validated async client for the Hyperliquid API.
 Author-email: Marcel Claramunt <marcel@tribulnation.com>
 License-Expression: MIT

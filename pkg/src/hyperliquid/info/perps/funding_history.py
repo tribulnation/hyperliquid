@@ -2,6 +2,10 @@ from typing_extensions import AsyncIterable
 from hyperliquid.core import TypedDict
 import pydantic
 from hyperliquid.info.core import InfoMixin
+from hyperliquid.info.pagination import paginate
+
+PAGE_SIZE = 500
+"""Maximum number of entries `funding_history` returns per call."""
 
 class FundingHistoryEntry(TypedDict):
   coin: str
@@ -44,17 +48,25 @@ class FundingHistory(InfoMixin):
     A single call to `funding_history` returns at most 500 entries, so prefer this
     whenever the requested range may hold more.
 
+    Pages are advanced to the last timestamp seen rather than past it, and the
+    re-fetched entries are dropped by position, so entries sharing a millisecond
+    are never skipped at a page boundary.
+
     Args:
       coin: Coin, e.g. "ETH".
       start_time: Start time in milliseconds, inclusive.
       end_time: End time in milliseconds, inclusive.
 
+    Raises:
+      PaginationError: The range cannot be walked without losing entries.
+
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-historical-funding-rates)
     """
-    while end_time is None or start_time < end_time:
-      fundings = await self.funding_history(coin, start_time, end_time=end_time)
-      if not fundings:
-        break
-      yield fundings
-      start_time = max(entry['time'] for entry in fundings) + 1
+    async def fetch(cursor: int) -> list[FundingHistoryEntry]:
+      """Fetch one page of funding rates starting at `cursor`."""
+      return await self.funding_history(coin, cursor, end_time=end_time)
+    async for page in paginate(
+      fetch, start_time=start_time, end_time=end_time, page_size=PAGE_SIZE,
+    ):
+      yield page

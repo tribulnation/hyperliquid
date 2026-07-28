@@ -9,6 +9,30 @@ The client distinguishes between failure modes through explicit exception types.
 - `ApiError`: the remote API returned an application-level error
 - `ValidationError`: the response shape did not match the expected schema
 - `LogicError`: incorrect local usage of the client
+- `PaginationError`: a `*_paged` sweep could not continue without losing entries
+
+## Pagination
+
+Hyperliquid pages history by time, and its millisecond timestamps are not unique.
+The `*_paged` helpers therefore re-read the millisecond a page ends on and drop the
+overlap by position, so entries sharing a timestamp are never skipped at a page
+boundary.
+
+A millisecond holding a whole page of entries cannot be read past, because the
+endpoint has no cursor finer than time. The helpers raise `PaginationError` rather
+than skipping it:
+
+```python
+from hyperliquid import PaginationError
+
+try:
+  async for page in client.info.user_fills_by_time_paged(user, start_ms):
+    ...
+except PaginationError:
+  # the sweep stopped rather than dropping entries; the message names the
+  # timestamp to resume from if the loss is acceptable
+  ...
+```
 
 ## Recommended Pattern
 

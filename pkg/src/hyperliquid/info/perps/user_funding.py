@@ -2,6 +2,10 @@ from typing_extensions import AsyncIterable, Literal
 from hyperliquid.core import TypedDict
 import pydantic
 from hyperliquid.info.core import InfoMixin
+from hyperliquid.info.pagination import paginate
+
+PAGE_SIZE = 500
+"""Maximum number of entries `user_funding` returns per call."""
 
 class FundingDelta(TypedDict):
   type: Literal['funding']
@@ -54,14 +58,28 @@ class UserFunding(InfoMixin):
     A single call to `user_funding` returns at most 500 entries, so prefer this
     whenever the requested range may hold more.
 
+    Every open position is funded on the same millisecond, so pages are advanced to
+    the last timestamp seen rather than past it, and the re-fetched entries are
+    dropped by position. Funding entries carry no unique id, so no key-based
+    deduplication is possible.
+
     Args:
       user: Account address.
       start_time: Start time in milliseconds, inclusive.
       end_time: End time in milliseconds, inclusive.
+
+    Raises:
+      PaginationError: The range cannot be walked without losing entries. Notably,
+        an account holding 500 or more funded positions cannot be swept at all,
+        since one funding millisecond then fills a whole page.
+
+    References:
+      - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-a-users-funding-history-or-non-funding-ledger-updates)
     """
-    while end_time is None or start_time < end_time:
-      fundings = await self.user_funding(user, start_time, end_time=end_time)
-      if not fundings:
-        break
-      yield fundings
-      start_time = max(entry['time'] for entry in fundings) + 1
+    async def fetch(cursor: int) -> list[UserFundingEntry]:
+      """Fetch one page of funding entries starting at `cursor`."""
+      return await self.user_funding(user, cursor, end_time=end_time)
+    async for page in paginate(
+      fetch, start_time=start_time, end_time=end_time, page_size=PAGE_SIZE,
+    ):
+      yield page

@@ -45,6 +45,7 @@ src/hyperliquid/exchange/core/mixin.py
 src/hyperliquid/exchange/core/signing.py
 src/hyperliquid/info/__init__.py
 src/hyperliquid/info/core.py
+src/hyperliquid/info/pagination.py
 src/hyperliquid/info/methods/__init__.py
 src/hyperliquid/info/methods/aligned_quote_token_info.py
 src/hyperliquid/info/methods/all_borrow_lend_reserve_states.py

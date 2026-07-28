@@ -4,6 +4,10 @@ from decimal import Decimal
 from hyperliquid.core import TypedDict
 import pydantic
 from hyperliquid.info.core import InfoMixin
+from hyperliquid.info.pagination import paginate
+
+PAGE_SIZE = 2000
+"""Maximum number of entries `user_non_funding_ledger_updates` returns per call."""
 
 class DepositDelta(TypedDict):
   """Funds deposited into the account."""
@@ -317,17 +321,26 @@ class UserNonFundingLedgerUpdates(InfoMixin):
     the rest, so any account with more history is truncated without an error. Prefer this
     over `user_non_funding_ledger_updates` whenever complete history matters.
 
+    One transaction can emit several deltas on the same millisecond, so pages are
+    advanced to the last timestamp seen rather than past it, and the re-fetched
+    entries are dropped by position. `(time, hash)` is not used as a key because it
+    is not unique, and hashing the body would collapse identical deltas.
+
     Args:
       user: Account address.
       start_time: Start time in milliseconds, inclusive.
       end_time: End time in milliseconds, inclusive.
 
+    Raises:
+      PaginationError: The range cannot be walked without losing entries.
+
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#retrieve-a-users-funding-history-or-non-funding-ledger-updates)
     """
-    while end_time is None or start_time < end_time:
-      updates = await self.user_non_funding_ledger_updates(user, start_time, end_time=end_time)
-      if not updates:
-        break
-      yield updates
-      start_time = max(entry['time'] for entry in updates) + 1
+    async def fetch(cursor: int) -> UserNonFundingLedgerUpdatesResponse:
+      """Fetch one page of ledger updates starting at `cursor`."""
+      return await self.user_non_funding_ledger_updates(user, cursor, end_time=end_time)
+    async for page in paginate(
+      fetch, start_time=start_time, end_time=end_time, page_size=PAGE_SIZE,
+    ):
+      yield page

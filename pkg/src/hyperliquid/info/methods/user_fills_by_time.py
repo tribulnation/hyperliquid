@@ -2,6 +2,10 @@ from typing_extensions import Literal, NotRequired, AsyncIterable
 from hyperliquid.core import TypedDict
 import pydantic
 from hyperliquid.info.core import InfoMixin
+from hyperliquid.info.pagination import paginate
+
+PAGE_SIZE = 2000
+"""Maximum number of fills `user_fills_by_time` returns per call."""
 
 class UserFill(TypedDict):
   coin: str
@@ -75,18 +79,28 @@ class UserFillsByTime(InfoMixin):
     A single call to `user_fills_by_time` returns at most 2000 fills, so prefer this
     whenever the requested range may hold more.
 
+    Many fills share a millisecond, so pages are advanced to the last timestamp seen
+    rather than past it, and the re-fetched entries are dropped by position. `tid` is
+    not used as a key: every `Spot Dust Conversion` fill carries the sentinel `tid: 0`.
+
     Args:
       user: Account address.
       start_time: Start time in milliseconds, inclusive.
       end_time: End time in milliseconds, inclusive.
       aggregate_by_time: Aggregate partial fills in the same block.
 
+    Raises:
+      PaginationError: The range cannot be walked without losing fills.
+
     References:
       - [Hyperliquid API docs](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#retrieve-a-users-fills-by-time)
     """
-    while end_time is None or start_time < end_time:
-      fills = await self.user_fills_by_time(user, start_time, end_time=end_time, aggregate_by_time=aggregate_by_time)
-      if not fills:
-        break
-      yield fills
-      start_time = max(entry['time'] for entry in fills) + 1
+    async def fetch(cursor: int) -> list[UserFill]:
+      """Fetch one page of fills starting at `cursor`."""
+      return await self.user_fills_by_time(
+        user, cursor, end_time=end_time, aggregate_by_time=aggregate_by_time,
+      )
+    async for page in paginate(
+      fetch, start_time=start_time, end_time=end_time, page_size=PAGE_SIZE,
+    ):
+      yield page

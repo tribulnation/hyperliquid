@@ -7,7 +7,7 @@ from typed_core.exceptions import (
   ApiError, BadRequest, AuthError, RateLimited, LogicError,
 )
 from typed_core.http import HttpClient
-from .core import HYPERLIQUID_MAINNET, HYPERLIQUID_TESTNET
+from .core import HYPERLIQUID_MAINNET, HYPERLIQUID_TESTNET, PaginationError
 from .core.ws import SocketClient
 from .info import Info
 from .exchange import Exchange
